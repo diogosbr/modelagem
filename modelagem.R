@@ -1,4 +1,4 @@
-modelos=function(coord,rpedictors,k=3,pasta,diretorio="especie",plot=T,
+modelos=function(coord,predictors,k=3,diretorio="especie",pasta,plot=T,
                  bc=T,mx=T,dm=T,GLM=T,RF=T,SVM=T,mah=F){
   diretorio='teste'
   original=getwd()
@@ -20,9 +20,9 @@ modelos=function(coord,rpedictors,k=3,pasta,diretorio="especie",plot=T,
     download.file(url, dest="maxent.zip", mode="wb") 
     unzip ("maxent.zip",files="maxent.jar", exdir = system.file("java", package="dismo"))
     unlink("maxent.zip")
-  }else(cat("O maxent.jar est· na pasta java do dismo\n"))
+  }else(cat("O maxent.jar est√° na pasta java do dismo\n"))
   
-  #Abrindo bibliotecas necess·rias####
+  #Abrindo bibliotecas necess√°rias####
   library(maps)
   library(mapdata)
   library(maptools)
@@ -34,11 +34,11 @@ modelos=function(coord,rpedictors,k=3,pasta,diretorio="especie",plot=T,
   # Raster ####
   #-----------#
   
-  #Escolhento pasta das vari·veis ambientais
+  #Escolhento pasta das vari√°veis ambientais
   if(exists('pasta')){
     pasta=pasta
   }else(c(pasta="D:/modelagem/Asc",
-        warning("A pasta das vari·veis ambientais n„o foi inoformada e foi alterada automaticamente para 'D:/modelagem/Asc'")))
+        warning("A pasta das vari√°veis ambientais n√£o foi inoformada e foi alterada automaticamente para 'D:/modelagem/Asc'")))
   
   if(exists("predictors")!=T){
     lista <- list.files(pasta,pattern='.asc', full.names=TRUE )
@@ -47,14 +47,14 @@ modelos=function(coord,rpedictors,k=3,pasta,diretorio="especie",plot=T,
   
   
   ##------------------##
-  #Pontos de ocorrÍncia
+  #Pontos de ocorr√™ncia
   ##------------------##
   
-  #Extrair os valores ambientais das localidades onde h· registros de ocorrÍncia
+  #Extrair os valores ambientais das localidades onde h√° registros de ocorr√™ncia
   if(exists('pts')){
     pts=pts
-    if(dim(pts)[2]==2){pts=pts}else(stop("Verique o n˙mero de colunas de planilha com as coordenadas"))
-  }else(stop("N„o existe objeto com os pontos de ocorrÍncia.","Verifique o nome do objeto"))
+    if(dim(pts)[2]==2){pts=pts}else(stop("Verique o n√∫mero de colunas de planilha com as coordenadas"))
+  }else(stop("N√£o existe objeto com os pontos de ocorr√™ncia.","Verifique o nome do objeto"))
   
   source("https://raw.githubusercontent.com/diogosbr/modelagem/master/clean.R")
   pts1=clean(pts,predictors)
@@ -84,7 +84,7 @@ modelos=function(coord,rpedictors,k=3,pasta,diretorio="especie",plot=T,
     #Bioclim #####
     
     for(i in 1:k){
-      cat(c("\r","ComeÁou a partiÁ„o", i,"Bioclim"))
+      cat(c("\r","Come√ßou a parti√ß√£o", i,"Bioclim"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != 1, ]
@@ -119,7 +119,7 @@ modelos=function(coord,rpedictors,k=3,pasta,diretorio="especie",plot=T,
     #Maxent #####
     
     for(i in 1:k){
-      cat(c("\r","ComeÁou a partiÁ„o", i,"Maxent"))
+      cat(c("\r","Come√ßou a parti√ß√£o", i,"Maxent"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != 1, ]
@@ -155,7 +155,7 @@ modelos=function(coord,rpedictors,k=3,pasta,diretorio="especie",plot=T,
     #Domain #####
     
     for(i in 1:k){
-      cat(c("\r","ComeÁou a partiÁ„o", i,"Domain"))
+      cat(c("\r","Come√ßou a parti√ß√£o", i,"Domain"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != 1, ]
@@ -191,7 +191,7 @@ modelos=function(coord,rpedictors,k=3,pasta,diretorio="especie",plot=T,
     #Mahalanobis #####
     
     for(i in 1:k){
-      cat(c("\r","ComeÁou a partiÁ„o", i,"Mahalanobis"))
+      cat(c("\r","Come√ßou a parti√ß√£o", i,"Mahalanobis"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != 1, ]
@@ -224,7 +224,7 @@ modelos=function(coord,rpedictors,k=3,pasta,diretorio="especie",plot=T,
   if(GLM==T){
     #GLM ####
     for(i in 1:k){
-      cat(c("\r","ComeÁou a partiÁ„o", i,"GLM"))
+      cat(c("\r","Come√ßou a parti√ß√£o", i,"GLM"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
@@ -267,7 +267,7 @@ modelos=function(coord,rpedictors,k=3,pasta,diretorio="especie",plot=T,
     #Random Forest ####
     library(randomForest)
     for(i in 1:k){
-      cat(c("\r","ComeÁou a partiÁ„o", i,"RandomForest"))
+      cat(c("\r","Come√ßou a parti√ß√£o", i,"RandomForest"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
@@ -310,7 +310,7 @@ modelos=function(coord,rpedictors,k=3,pasta,diretorio="especie",plot=T,
     #SVM ####
     library(kernlab)
     for(i in 1:k){
-      cat(c("\r","ComeÁou a partiÁ„o", i,"SVM"))
+      cat(c("\r","Come√ßou a parti√ß√£o", i,"SVM"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
@@ -413,7 +413,7 @@ modelos=function(coord,rpedictors,k=3,pasta,diretorio="especie",plot=T,
   points(pts1)
   dev.off()
   
-  ### Modelagem atÈ aqui ###
+  ### Modelagem at√© aqui ###
   
   if(plot==T){
     plot(mm)
