@@ -56,7 +56,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
   }else(stop("Não existe objeto com os pontos de ocorrência.","Verifique o nome do objeto"))
   
   source("https://raw.githubusercontent.com/diogosbr/modelagem/master/clean.R")
-  pts1=clean(pts,predictors)
+  pts1=clean(pts,predictors=predictors)
   
   #presvals=extract(predictors,pts1)
   
