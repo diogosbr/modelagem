@@ -380,7 +380,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
    
   dir.create("./temp")
 
-  for(i in length(names(final))){
+  for(i in 1:length(names(final))){
     writeRaster(paste0(final[[i]],paste0("./temp/",names(final)[i],".tif")),format="GTiff")
   }
   
