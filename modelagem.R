@@ -19,6 +19,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
     download.file(url, dest="maxent.zip", mode="wb") 
     unzip ("maxent.zip",files="maxent.jar", exdir = system.file("java", package="dismo"))
     unlink("maxent.zip")
+    warning("Maxent foi colocado no diretório")
   }else(cat("O maxent.jar está na pasta java do dismo\n"))
   
   #Abrindo bibliotecas necessárias####
