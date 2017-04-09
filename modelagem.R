@@ -1,6 +1,5 @@
-modelos=function(coord,predictors,k=3,diretorio="especie",pasta,plot=T,
+modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
                  bc=T,mx=T,dm=T,GLM=T,RF=T,SVM=T,mah=F){
-  diretorio='teste'
   original=getwd()
   #escolha da pasta 
   dir.create(paste0("./",diretorio))
