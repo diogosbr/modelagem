@@ -376,10 +376,11 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   values(SVM.cut)[values(SVM.cut)<mean(aval[grep("SVM",aval[,7]),2])]=0
   #padronizando de 0 a 1
   values(SVM.cut)=values(SVM.cut)/SVM.cut@data@max
-  
+      
+   
   dir.create("./temp")
   for(i in length(names(final))){
-    writeRaster(paste0("./temp",final[[i]]))
+    writeRaster(paste0(temp[[i]],paste0("./temp/",names(final)[i])))
   }
   
   final2=stack(list.files("./temp",pattern = ".tif",full.names = T))
