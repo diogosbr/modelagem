@@ -412,7 +412,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
     plot(mm)
     points(pts1)
   }
-  setwd=original
+  setwd(original)
   cat('Terminou! Verifique seus modelos.\rVeja o modelo final')
 }
 
