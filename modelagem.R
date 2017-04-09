@@ -28,23 +28,8 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
   library(dismo)
   library(rgdal)
   library(raster)
-  
-  #-----------#
-  # Raster ####
-  #-----------#
-  
-  #Escolhento pasta das variáveis ambientais
-  if(exists('pasta')){
-    pasta=pasta
-  }else(c(pasta="D:/modelagem/Asc",
-        warning("A pasta das variáveis ambientais não foi inoformada e foi alterada automaticamente para 'D:/modelagem/Asc'")))
-  
-  if(exists("predictors")!=T){
-    lista <- list.files(pasta,pattern='.asc', full.names=TRUE )
-    predictors <- stack(lista)
-  }
-  
-  
+   
+
   ##------------------##
   #Pontos de ocorrência
   ##------------------##
