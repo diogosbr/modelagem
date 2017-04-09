@@ -379,8 +379,9 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       
    
   dir.create("./temp")
+
   for(i in length(names(final))){
-    writeRaster(paste0(temp[[i]],paste0("./temp/",names(final)[i])))
+    writeRaster(paste0(final[[i]],paste0("./temp/",names(final)[i],".tif")),format="GTiff)
   }
   
   final2=stack(list.files("./temp",pattern = ".tif",full.names = T))
