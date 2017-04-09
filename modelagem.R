@@ -1,4 +1,4 @@
-modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
+modelos=function(coord,k=3,diretorio="teste",plot=T,
                  bc=T,mx=T,dm=T,GLM=T,RF=T,SVM=T,mah=F){
   original=getwd()
   #escolha da pasta 
