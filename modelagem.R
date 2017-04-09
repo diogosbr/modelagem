@@ -377,23 +377,30 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   #padronizando de 0 a 1
   values(SVM.cut)=values(SVM.cut)/SVM.cut@data@max
   
-  mm=mean(bc.cut,
-          dm.cut,
-          GLM.cut,
-          mx.cut,
-          RF.cut,
-          SVM.cut)
+  dir.create("./temp")
+  for(i in length(names(final))){
+    writeRaster(paste0("./temp",final[[i]]))
+  }
+  
+  final2=stack(list.files("./temp",pattern = ".tif",full.names = T))
+  mm=mean(final2)
+  #mm=mean(bc.cut,
+  #        dm.cut,
+   #       GLM.cut,
+    #      mx.cut,
+     #     RF.cut,
+      #    SVM.cut)
   
   values(mm)=values(mm)/mm@data@max
   
-  writeRaster(mm,paste0("./final/","Geral",'ensemble',".tif"),format="GTiff",overwrite=T)
-  write.table(aval,"Aval.csv",sep=";",dec=".")
+  writeRaster(mm,paste0("./final/","Geral_",'ensemble',".tif"),format="GTiff",overwrite=T)
+  write.table(aval,"Avaliação.csv",sep=";",dec=".")
   
-  png(paste0("./png/",'Geral_','ensemble','.png'))
+  png(paste0("./png/",'_Geral_','ensemble','.png'))
   plot(mm,main="Geral ensemble")
   dev.off()
   
-  png(paste0("./png/",'Geral_','ensemble',"pontos",'.png'))
+  png(paste0("./png/",'_Geral_','ensemble',"pontos",'.png'))
   plot(mm,main="Geral ensemble")
   points(pts1)
   dev.off()
@@ -402,7 +409,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   
   if(plot==T){
     plot(mm)
-    points(pts1,pch=16)
+    points(pts1)
   }
   setwd=original
   cat('Terminou! Verifique seus modelos.\rVeja o modelo final')
