@@ -1,4 +1,4 @@
-modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
+modelos=function(coord,k=3,diretorio="teste",plot=T,
                  bc=T,mx=T,dm=T,GLM=T,RF=T,SVM=T,mah=F){
   original=getwd()
   #escolha da pasta 
@@ -6,7 +6,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
   setwd(paste0("./",diretorio))
   
   #instalando pacotes
-  packages=c('maps','mapdata',  'maptools', 'dismo', 'rgdal', 'raster', 'jsonlite',"rJava")
+  packages=c('maps','mapdata',  'maptools', 'dismo', 'rgdal', 'raster', 'jsonlite',"rJava","randomForest","kernlab")
   for (p in setdiff(packages, installed.packages()[,"Package"])){
     install.packages(p)
   }
@@ -28,23 +28,8 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
   library(dismo)
   library(rgdal)
   library(raster)
-  
-  #-----------#
-  # Raster ####
-  #-----------#
-  
-  #Escolhento pasta das variáveis ambientais
-  if(exists('pasta')){
-    pasta=pasta
-  }else(c(pasta="D:/modelagem/Asc",
-        warning("A pasta das variáveis ambientais não foi inoformada e foi alterada automaticamente para 'D:/modelagem/Asc'")))
-  
-  if(exists("predictors")!=T){
-    lista <- list.files(pasta,pattern='.asc', full.names=TRUE )
-    predictors <- stack(lista)
-  }
-  
-  
+   
+
   ##------------------##
   #Pontos de ocorrência
   ##------------------##
@@ -83,7 +68,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
     #Bioclim #####
     
     for(i in 1:k){
-      cat(c("\r","Começou a partição", i,"Bioclim"))
+      cat(c("\n","Começou a partição", i,"Bioclim"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != 1, ]
@@ -109,7 +94,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
         png(paste0("./png/",'bc_','ensemble ','con.png'))
         plot(bc.ens,main="Bioclim ensemble")
         dev.off()
-        cat(c("\r","Terminou! Verifique seus modelos"))
+        cat(c("\n","Terminou Bioclim"))
       }
     }
   }
@@ -118,7 +103,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
     #Maxent #####
     
     for(i in 1:k){
-      cat(c("\r","Começou a partição", i,"Maxent"))
+      cat(c("\n","Começou a partição", i,"Maxent"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != 1, ]
@@ -145,7 +130,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
         plot(mx.ens,main="Maxent ensemble")
         dev.off()
         
-        cat(c("\r","Terminou! Verifique seus modelos"))
+        cat(c("\n","Terminou Maxent"))
       }
     }
   }
@@ -154,7 +139,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
     #Domain #####
     
     for(i in 1:k){
-      cat(c("\r","Começou a partição", i,"Domain"))
+      cat(c("\n","Começou a partição", i,"Domain"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != 1, ]
@@ -181,7 +166,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
         plot(dm.ens,main="Domain ensemble")
         dev.off()
         
-        cat(c("\r","Terminou! Verifique seus modelos"))
+        cat(c("\n","Terminou Domain"))
       }
     }
   }
@@ -190,7 +175,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
     #Mahalanobis #####
     
     for(i in 1:k){
-      cat(c("\r","Começou a partição", i,"Mahalanobis"))
+      cat(c("\n","Começou a partição", i,"Mahalanobis"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != 1, ]
@@ -215,7 +200,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
         plot(mah.ens,main="Mahalanobis ensemble")
         dev.off()
         
-        cat(c("\r","Terminou! Verifique seus modelos"))
+        cat(c("\n","Terminou Mahalanobis"))
       }
     }
   }
@@ -223,7 +208,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
   if(GLM==T){
     #GLM ####
     for(i in 1:k){
-      cat(c("\r","Começou a partição", i,"GLM"))
+      cat(c("\n","Começou a partição", i,"GLM"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
@@ -257,7 +242,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
         plot(GLM.ens,main="GLM ensemble")
         dev.off()
         
-        cat(c("\r","Terminou! Verifique seus modelos"))
+        cat(c("\n","Terminou GLM"))
       }
     }
   }
@@ -266,7 +251,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
     #Random Forest ####
     library(randomForest)
     for(i in 1:k){
-      cat(c("\r","Começou a partição", i,"RandomForest"))
+      cat(c("\n","Começou a partição", i,"RandomForest"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
@@ -300,7 +285,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
         plot(RF.ens,main="Random Forest ensemble")
         dev.off()
         
-        cat(c("\r","Terminou! Verifique seus modelos"))
+        cat(c("\n","Terminou Random Forest"))
       }
     }
   }
@@ -309,7 +294,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
     #SVM ####
     library(kernlab)
     for(i in 1:k){
-      cat(c("\r","Começou a partição", i,"SVM"))
+      cat(c("\n","Começou a partição", i,"SVM"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
@@ -343,7 +328,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
         plot(SVM.ens,main="Random Forest ensemble")
         dev.off()
         
-        cat(c("\r","Terminou! Verifique seus modelos"))
+        cat(c("\n","Terminou SVM"))
       }
     }
   }
@@ -419,7 +404,7 @@ modelos=function(coord,predictors,k=3,diretorio="teste",pasta,plot=T,
     points(pts1,pch=16)
   }
   setwd=original
-  cat('Veja o modelo final')
+  cat('Terminou! Verifique seus modelos.\rVeja o modelo final')
 }
 
 
