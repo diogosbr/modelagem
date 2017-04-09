@@ -378,10 +378,10 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   values(SVM.cut)=values(SVM.cut)/SVM.cut@data@max
       
    
-  dir.create("./temp")
+  dir.create("./temporarios")
 
   for(i in 1:length(names(final))){
-    writeRaster(paste0(final[[i]],paste0("./temp/",names(final)[i],".tif")),format="GTiff")
+    writeRaster(paste0(final[[i]],paste0("./temporarios/",names(final)[i],".tif")),format="GTiff")
   }
   
   final2=stack(list.files("./temp",pattern = ".tif",full.names = T))
