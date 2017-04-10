@@ -347,42 +347,42 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   RF.cut=final[[grep("RF",names(final))]]
   SVM.cut=final[[grep("SVM",names(final))]]
         
-    if(bc=T){
+    if(bc==T){
     #recorte com TSSth
     values(bc.cut)[values(bc.cut)<mean(aval[grep("Bioclim",aval[,7]),2])]=0
     #padronizando de 0 a 1
     values(bc.cut)=values(bc.cut)/bc.cut@data@max
   }
   
-  if(dm=T){
+  if(dm==T){
     #recorte com TSSth
     values(dm.cut)[values(dm.cut)<mean(aval[grep("Domain",aval[,7]),2])]=0
     #padronizando de 0 a 1
     values(dm.cut)=values(dm.cut)/dm.cut@data@max
   }
   
-  if(GLM=T){
+  if(GLM==T){
     #recorte com TSSth
     values(GLM.cut)[values(GLM.cut)<mean(aval[grep("GLM",aval[,7]),2])]=0
     #padronizando de 0 a 1
     values(GLM.cut)=values(GLM.cut)/GLM.cut@data@max
   }
 
-  if(mx=T){
+  if(mx==T){
     #recorte com TSSth
     values(mx.cut)[values(mx.cut)<mean(aval[grep("Maxent",aval[,7]),2])]=0
     #padronizando de 0 a 1
     values(mx.cut)=values(mx.cut)/mx.cut@data@max
   }
   
-  if(RF){
+  if(RF==T){
     #recorte com TSSth
     values(RF.cut)[values(RF.cut)<mean(aval[grep("Random Forest",aval[,7]),2])]=0
     #padronizando de 0 a 1
     values(RF.cut)=values(RF.cut)/RF.cut@data@max
   }
 
-  if(SVM){
+  if(SVM==T){
     #recorte com TSSth
     values(SVM.cut)[values(SVM.cut)<mean(aval[grep("SVM",aval[,7]),2])]=0
     #padronizando de 0 a 1
