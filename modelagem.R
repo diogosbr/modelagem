@@ -399,7 +399,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
     points(pts1)
   }
   setwd(original)
-  cat('Terminou! Verifique seus modelos.\rVeja o modelo final')
+  cat('\nTerminou! Verifique seus modelos.')
 }
 
 
