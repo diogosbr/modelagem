@@ -64,6 +64,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   dir.create("./ensembles")
   dir.create("./final")
   dir.create("./png")
+  dir.create("./temporario")
   
   if(bc==T){
     #Bioclim #####
