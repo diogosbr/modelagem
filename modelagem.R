@@ -346,38 +346,49 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   mx.cut=final[[grep("Maxent",names(final))]]
   RF.cut=final[[grep("RF",names(final))]]
   SVM.cut=final[[grep("SVM",names(final))]]
+        
+    if(bc=T){
+    #recorte com TSSth
+    values(bc.cut)[values(bc.cut)<mean(aval[grep("Bioclim",aval[,7]),2])]=0
+    #padronizando de 0 a 1
+    values(bc.cut)=values(bc.cut)/bc.cut@data@max
+  }
   
-  #recorte com TSSth
-  values(bc.cut)[values(bc.cut)<mean(aval[grep("Bioclim",aval[,7]),2])]=0
-  #padronizando de 0 a 1
-  values(bc.cut)=values(bc.cut)/bc.cut@data@max
+  if(dm=T){
+    #recorte com TSSth
+    values(dm.cut)[values(dm.cut)<mean(aval[grep("Domain",aval[,7]),2])]=0
+    #padronizando de 0 a 1
+    values(dm.cut)=values(dm.cut)/dm.cut@data@max
+  }
   
-  #recorte com TSSth
-  values(dm.cut)[values(dm.cut)<mean(aval[grep("Domain",aval[,7]),2])]=0
-  #padronizando de 0 a 1
-  values(dm.cut)=values(dm.cut)/dm.cut@data@max
+  if(GLM=T){
+    #recorte com TSSth
+    values(GLM.cut)[values(GLM.cut)<mean(aval[grep("GLM",aval[,7]),2])]=0
+    #padronizando de 0 a 1
+    values(GLM.cut)=values(GLM.cut)/GLM.cut@data@max
+  }
+
+  if(mx=T){
+    #recorte com TSSth
+    values(mx.cut)[values(mx.cut)<mean(aval[grep("Maxent",aval[,7]),2])]=0
+    #padronizando de 0 a 1
+    values(mx.cut)=values(mx.cut)/mx.cut@data@max
+  }
   
-  #recorte com TSSth
-  values(GLM.cut)[values(GLM.cut)<mean(aval[grep("GLM",aval[,7]),2])]=0
-  #padronizando de 0 a 1
-  values(GLM.cut)=values(GLM.cut)/GLM.cut@data@max
-  
-  #recorte com TSSth
-  values(mx.cut)[values(mx.cut)<mean(aval[grep("Maxent",aval[,7]),2])]=0
-  #padronizando de 0 a 1
-  values(mx.cut)=values(mx.cut)/mx.cut@data@max
-  
-  #recorte com TSSth
-  values(RF.cut)[values(RF.cut)<mean(aval[grep("Random Forest",aval[,7]),2])]=0
-  #padronizando de 0 a 1
-  values(RF.cut)=values(RF.cut)/RF.cut@data@max
-  
-  #recorte com TSSth
-  values(SVM.cut)[values(SVM.cut)<mean(aval[grep("SVM",aval[,7]),2])]=0
-  #padronizando de 0 a 1
-  values(SVM.cut)=values(SVM.cut)/SVM.cut@data@max
+  if(RF){
+    #recorte com TSSth
+    values(RF.cut)[values(RF.cut)<mean(aval[grep("Random Forest",aval[,7]),2])]=0
+    #padronizando de 0 a 1
+    values(RF.cut)=values(RF.cut)/RF.cut@data@max
+  }
+
+  if(SVM){
+    #recorte com TSSth
+    values(SVM.cut)[values(SVM.cut)<mean(aval[grep("SVM",aval[,7]),2])]=0
+    #padronizando de 0 a 1
+    values(SVM.cut)=values(SVM.cut)/SVM.cut@data@max
+  }
       
-   
   dir.create("./temporarios")
 
   for(i in 1:length(names(final))){
