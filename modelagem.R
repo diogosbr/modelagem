@@ -36,8 +36,8 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   ##------------------##
   
   #Extrair os valores ambientais das localidades onde há registros de ocorrência
-  if(exists('pts')){
-    pts=pts
+  if(exists('coord')){
+    pts=coord
     if(dim(pts)[2]==2){pts=pts}else(stop("Verique o número de colunas de planilha com as coordenadas"))
   }else(stop("Não existe objeto com os pontos de ocorrência.","Verifique o nome do objeto"))
   
