@@ -73,8 +73,8 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       cat(c("\n","Começou a partição", i,"Bioclim"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
-      backg_train <- backg[group.a != 1, ]
-      backg_test <- backg[group.a == 1, ]
+      backg_train <- backg[group.a != i, ]
+      backg_test <- backg[group.a == i, ]
       bc <- bioclim(predictors, pres_train)
       e=evaluate( pres_test, backg_test,bc, predictors)
       tr=threshold(e,"spec_sens")
@@ -113,8 +113,8 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       cat(c("\n","Começou a partição", i,"Maxent"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
-      backg_train <- backg[group.a != 1, ]
-      backg_test <- backg[group.a == 1, ]
+      backg_train <- backg[group.a != i, ]
+      backg_test <- backg[group.a == i, ]
       mx <- maxent(predictors, pres_train)
       e=evaluate( pres_test, backg_test,mx, predictors)
       tr=threshold(e,"spec_sens")
@@ -153,8 +153,8 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       cat(c("\n","Começou a partição", i,"Domain"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
-      backg_train <- backg[group.a != 1, ]
-      backg_test <- backg[group.a == 1, ]
+      backg_train <- backg[group.a != i, ]
+      backg_test <- backg[group.a == i, ]
       dm <- domain(predictors, pres_train)
       e=evaluate( pres_test, backg_test,dm, predictors)
       tr=threshold(e,"spec_sens")
@@ -193,8 +193,8 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       cat(c("\n","Começou a partição", i,"Mahalanobis"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
-      backg_train <- backg[group.a != 1, ]
-      backg_test <- backg[group.a == 1, ]
+      backg_train <- backg[group.a != i, ]
+      backg_test <- backg[group.a == i, ]
       mah <- mahal(predictors, pres_train)
       e=evaluate( pres_test, backg_test,mah, predictors)
       tr=threshold(e,"spec_sens")
@@ -231,8 +231,8 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
-      backg_train <- backg[group.a != 1, ]
-      backg_test <- backg[group.a == 1, ]
+      backg_train <- backg[group.a != i, ]
+      backg_test <- backg[group.a == i, ]
       
       train <- rbind(pres_train, backg_train)
       pb_train <- c(rep(1, nrow(pres_train)), rep(0, nrow(backg_train)))
@@ -278,8 +278,8 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
-      backg_train <- backg[group.a != 1, ]
-      backg_test <- backg[group.a == 1, ]
+      backg_train <- backg[group.a != i, ]
+      backg_test <- backg[group.a == i, ]
       
       train <- rbind(pres_train, backg_train)
       pb_train <- c(rep(1, nrow(pres_train)), rep(0, nrow(backg_train)))
@@ -325,8 +325,8 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
-      backg_train <- backg[group.a != 1, ]
-      backg_test <- backg[group.a == 1, ]
+      backg_train <- backg[group.a != i, ]
+      backg_test <- backg[group.a == i, ]
       
       train <- rbind(pres_train, backg_train)
       pb_train <- c(rep(1, nrow(pres_train)), rep(0, nrow(backg_train)))
