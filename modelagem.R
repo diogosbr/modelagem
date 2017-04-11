@@ -20,7 +20,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
     unzip ("maxent.zip",files="maxent.jar", exdir = system.file("java", package="dismo"))
     unlink("maxent.zip")
     warning("Maxent foi colocado no diretório")
-  }else(cat("O maxent.jar está na pasta java do dismo\n"))
+  }else(cat("\nMaxent.jar está na pasta java do dismo\n"))
   
   #Abrindo bibliotecas necessárias####
   library(maps)
@@ -43,7 +43,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   
   source("https://raw.githubusercontent.com/diogosbr/modelagem/master/clean.R")
   pts1=clean(pts,predictors=predictors)
-  
+  names(pts1)=c("long","lat")
   #presvals=extract(predictors,pts1)
   
   #--------------#
