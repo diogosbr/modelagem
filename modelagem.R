@@ -380,15 +380,17 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   
   values(mm)=values(mm)/mm@data@max
   
+  names(aval)[,-7]=names(threshold(e))
+  
   writeRaster(mm,paste0("./final/","Geral_",'ensemble',".tif"),format="GTiff",overwrite=T)
   write.table(aval,"Avaliação.csv",sep=";",dec=".")
   
   png(paste0("./png/",'_Geral_','ensemble','.png'))
-  plot(mm,main=paste0("Geral ensemble",names(final)))
+  plot(mm,main=paste0("Geral ensemble",unique(aval[,7])))
   dev.off()
   
   png(paste0("./png/",'_Geral_','ensemble',"pontos",'.png'))
-  plot(mm,main=paste0("Geral ensemble",names(final)))
+  plot(mm,main=paste0("Geral ensemble",unique(aval[,7])))
   points(pts1)
   dev.off()
   
