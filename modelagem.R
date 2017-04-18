@@ -50,7 +50,8 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   # Modelando ####
   #--------------#
   
-  aval=as.data.frame(matrix(NA,k*6,7))
+  cont=table(c(bc,mx,dm,GLM,RF,SVM,mah))
+  aval=as.data.frame(matrix(NA,k*cont[2],7))
   
   backg <- randomPoints(predictors, n=1000, extf = 1.25)
   colnames(backg) = c( 'long' ,  'lat' )
