@@ -50,8 +50,9 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   # Modelando ####
   #--------------#
   
-  cont=table(c(bc,mx,dm,GLM,RF,SVM,mah))
+  #cont=table(c(bc,mx,dm,GLM,RF,SVM,mah))
   aval=as.data.frame(matrix(NA,k*cont[2],7))
+  aval=as.data.frame(matrix(NA,k*7,7))
   
   backg <- randomPoints(predictors, n=1000, extf = 1.25)
   colnames(backg) = c( 'long' ,  'lat' )
@@ -385,14 +386,14 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   names(aval)[7]="Algoritmo"
   
   writeRaster(mm,paste0("./final/","Geral_",'ensemble',".tif"),format="GTiff",overwrite=T)
-  write.table(aval,"Avaliação.csv",sep=";",dec=".")
+  write.table(na.omit(aval),"Avaliação.csv",sep=";",dec=".")
   
   png(paste0("./png/",'_Geral_','ensemble','.png'))
-  plot(mm,main=c(paste0("Ensemble ","geral"),levels(aval[,7])))
+  plot(mm,main=paste0("Ensemble ","geral"))
   dev.off()
   
   png(paste0("./png/",'_Geral_','ensemble',"pontos",'.png'))
-  plot(mm,main=c(paste0("Ensemble ","geral"),levels(aval[,7])))
+  plot(mm,main=paste0("Ensemble ","geral"))
   points(pts1)
   dev.off()
   
