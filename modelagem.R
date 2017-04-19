@@ -51,7 +51,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   #--------------#
   
   #cont=table(c(bc,mx,dm,GLM,RF,SVM,mah))
-  aval=as.data.frame(matrix(NA,k*cont[2],7))
+  #aval=as.data.frame(matrix(NA,k*cont[2],7))
   aval=as.data.frame(matrix(NA,k*7,7))
   
   backg <- randomPoints(predictors, n=1000, extf = 1.25)
