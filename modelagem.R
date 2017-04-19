@@ -388,11 +388,11 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   write.table(aval,"Avaliação.csv",sep=";",dec=".")
   
   png(paste0("./png/",'_Geral_','ensemble','.png'))
-  plot(mm,main=c(paste0("Ensemble ","geral"),levels(a[,7])))
+  plot(mm,main=c(paste0("Ensemble ","geral"),levels(aval[,7])))
   dev.off()
   
   png(paste0("./png/",'_Geral_','ensemble',"pontos",'.png'))
-  plot(mm,main=c(paste0("Ensemble ","geral"),levels(a[,7])))
+  plot(mm,main=c(paste0("Ensemble ","geral"),levels(aval[,7])))
   points(pts1)
   dev.off()
   
