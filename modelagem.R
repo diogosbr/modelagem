@@ -145,7 +145,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
         plot(mx.ens,main="Maxent ensemble")
         dev.off()
         #recorte com TSSth
-        values(mx.ens)[values(mx.ens)<mean(aval[grep("Bioclim",aval[,7]),2])]=0
+        values(mx.ens)[values(mx.ens)<mean(aval[grep("Maxent",aval[,7]),2])]=0
         #padronizando de 0 a 1
         values(mx.ens)=values(mx.ens)/mx.ens@data@max
         writeRaster(mx.ens,paste0("./temporario/","mx_",'ensemble_0-1',".tif"),format="GTiff",overwrite=T)
@@ -188,7 +188,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
         plot(dm.ens,main="Domain ensemble")
         dev.off()
         #recorte com TSSth
-        values(dm.ens)[values(dm.ens)<mean(aval[grep("Bioclim",aval[,7]),2])]=0
+        values(dm.ens)[values(dm.ens)<mean(aval[grep("Domain",aval[,7]),2])]=0
         #padronizando de 0 a 1
         values(dm.ens)=values(dm.ens)/dm.ens@data@max
         writeRaster(dm.ens,paste0("./temporario/","dm_",'ensemble_0-1',".tif"),format="GTiff",overwrite=T)
@@ -231,7 +231,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
         plot(mah.ens,main="Mahalanobis ensemble")
         dev.off()
         #recorte com TSSth
-        values(mah.ens)[values(mah.ens)<mean(aval[grep("Bioclim",aval[,7]),2])]=0
+        values(mah.ens)[values(mah.ens)<mean(aval[grep("Mahalanobis",aval[,7]),2])]=0
         #padronizando de 0 a 1
         values(mah.ens)=values(mah.ens)/mah.ens@data@max
         writeRaster(mah.ens,paste0("./temporario/","mah_",'ensemble_0-1',".tif"),format="GTiff",overwrite=T)
@@ -281,7 +281,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
         plot(GLM.ens,main="GLM ensemble")
         dev.off()
         #recorte com TSSth
-        values(GLM.ens)[values(GLM.ens)<mean(aval[grep("Bioclim",aval[,7]),2])]=0
+        values(GLM.ens)[values(GLM.ens)<mean(aval[grep("GLM",aval[,7]),2])]=0
         #padronizando de 0 a 1
         values(GLM.ens)=values(GLM.ens)/GLM.ens@data@max
         writeRaster(GLM.ens,paste0("./temporario/","GLM_",'ensemble_0-1',".tif"),format="GTiff",overwrite=T)
@@ -332,7 +332,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
         plot(RF.ens,main="Random Forest ensemble")
         dev.off()
         #recorte com TSSth
-        values(RF.ens)[values(RF.ens)<mean(aval[grep("Bioclim",aval[,7]),2])]=0
+        values(RF.ens)[values(RF.ens)<mean(aval[grep("Random Forest",aval[,7]),2])]=0
         #padronizando de 0 a 1
         values(RF.ens)=values(RF.ens)/RF.ens@data@max
         writeRaster(RF.ens,paste0("./temporario/","RF_",'ensemble_0-1',".tif"),format="GTiff",overwrite=T)
@@ -382,7 +382,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
         plot(SVM.ens,main="Random Forest ensemble")
         dev.off()
         #recorte com TSSth
-        values(SVM.ens)[values(SVM.ens)<mean(aval[grep("Bioclim",aval[,7]),2])]=0
+        values(SVM.ens)[values(SVM.ens)<mean(aval[grep("SVM",aval[,7]),2])]=0
         #padronizando de 0 a 1
         values(SVM.ens)=values(SVM.ens)/SVM.ens@data@max
         writeRaster(SVM.ens,paste0("./temporario/","SVM_",'ensemble_0-1',".tif"),format="GTiff",overwrite=T)
