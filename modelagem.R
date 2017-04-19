@@ -52,7 +52,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   
   #cont=table(c(bc,mx,dm,GLM,RF,SVM,mah))
   #aval=as.data.frame(matrix(NA,k*cont[2],7))
-  aval=as.data.frame(matrix(NA,k*7,7))
+  aval=as.data.frame(matrix(NA,k*7,10))
   
   backg <- randomPoints(predictors, n=1000, extf = 1.25)
   colnames(backg) = c( 'long' ,  'lat' )
@@ -79,9 +79,12 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       backg_test <- backg[group.a == i, ]
       bc <- bioclim(predictors, pres_train)
       e=evaluate( pres_test, backg_test,bc, predictors)
-      tr=threshold(e,"spec_sens")
+      tr=e@t[which.max(e@TPR + e@TNR)]
       aval[i,]=threshold(e)
       aval[i,7]="Bioclim"
+      aval[i,8] = e@auc
+      aval[i,9] = max(e@TPR + e@TNR) - 1
+      aval[i,10] = tr
       bc.mod=predict(predictors,bc)
       writeRaster(bc.mod,paste0("./modelos/","bc_",i,"_con.tif"),format="GTiff",overwrite=T)
       writeRaster(bc.mod>tr,paste0("./modelos/bin/","bc_",i,"_bin.tif"),format="GTiff",overwrite=T)
@@ -118,10 +121,13 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       backg_train <- backg[group.a != i, ]
       backg_test <- backg[group.a == i, ]
       mx <- maxent(predictors, pres_train)
-      e=evaluate( pres_test, backg_test,mx, predictors)
-      tr=threshold(e,"spec_sens")
+      e=evaluate( pres_test, backg_test,mx, predictors)      
+      tr=e@t[which.max(e@TPR + e@TNR)]
       aval[i+3,]=threshold(e)
       aval[i+3,7]="Maxent"
+      aval[i+3,8] = e@auc
+      aval[i+3,9] = max(e@TPR + e@TNR) - 1
+      aval[i+3,10] = tr      
       mx.mod=predict(predictors,mx)
       writeRaster(mx.mod,paste0("./modelos/","Maxent_",i,"_con.tif"),format="GTiff",overwrite=T)
       writeRaster(mx.mod>tr,paste0("./modelos/bin/","Maxent_",i,"_bin.tif"),format="GTiff",overwrite=T)
@@ -159,9 +165,12 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       backg_test <- backg[group.a == i, ]
       dm <- domain(predictors, pres_train)
       e=evaluate( pres_test, backg_test,dm, predictors)
-      tr=threshold(e,"spec_sens")
+      tr=e@t[which.max(e@TPR + e@TNR)]
       aval[i+6,]=threshold(e)
       aval[i+6,7]="Domain"
+      aval[i+6,8] = e@auc
+      aval[i+6,9] = max(e@TPR + e@TNR) - 1
+      aval[i+6,10] = tr      
       dm.mod=predict(predictors,dm)
       writeRaster(dm.mod,paste0("./modelos/","Domain_",i,"_con.tif"),format="GTiff",overwrite=T)
       writeRaster(dm.mod>tr,paste0("./modelos/bin/","Domain_",i,"_bin.tif"),format="GTiff",overwrite=T)
@@ -199,7 +208,12 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       backg_test <- backg[group.a == i, ]
       mah <- mahal(predictors, pres_train)
       e=evaluate( pres_test, backg_test,mah, predictors)
-      tr=threshold(e,"spec_sens")
+      tr=e@t[which.max(e@TPR + e@TNR)]
+      aval[i+18,]=threshold(e)
+      aval[i+18,7]="Mahalanobis"
+      aval[i+18,8] = e@auc
+      aval[i+17,9] = max(e@TPR + e@TNR) - 1
+      aval[i+18,10] = tr      
       mah.mod=predict(predictors,mah)
       writeRaster(mah.mod,paste0("./modelos/","Mahalanobis_",i,"_con.tif"),format="GTiff",overwrite=T)
       writeRaster(mah.mod>tr,paste0("./modelos/bin/","Mahalanobis_",i,"_bin.tif"),format="GTiff",overwrite=T)
@@ -243,9 +257,13 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       
       GLM <- glm(pa ~.,family = gaussian(link = "identity"), data=envtrain)
       e=evaluate( pres_test, backg_test,GLM, predictors)
-      tr=threshold(e,"spec_sens")
+      tr=e@t[which.max(e@TPR + e@TNR)]
       aval[i+9,]=threshold(e)
       aval[i+9,7]="GLM"
+      aval[i+9,8] = e@auc
+      aval[i+9,9] = max(e@TPR + e@TNR) - 1
+      aval[i+9,10] = tr      
+      
       GLM.mod=predict(predictors,GLM)
       writeRaster(GLM.mod,paste0("./modelos/","GLM_",i,"_con.tif"),format="GTiff",overwrite=T)
       writeRaster(GLM.mod>tr,paste0("./modelos/bin/","GLM_",i,"_bin.tif"),format="GTiff",overwrite=T)
@@ -290,9 +308,13 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       
       RF <- randomForest(pa ~., data=envtrain)
       e=evaluate( pres_test, backg_test,RF, predictors)
-      tr=threshold(e,"spec_sens")
+      tr=e@t[which.max(e@TPR + e@TNR)]
       aval[i+12,]=threshold(e)
       aval[i+12,7]="Random Forest"
+      aval[i+12,8] = e@auc
+      aval[i+12,9] = max(e@TPR + e@TNR) - 1
+      aval[i+12,10] = tr      
+      
       RF.mod=predict(predictors,RF)
       writeRaster(RF.mod,paste0("./modelos/","RF_",i,"_con.tif"),format="GTiff",overwrite=T)
       writeRaster(RF.mod>tr,paste0("./modelos/bin/","RF_",i,"_bin.tif"),format="GTiff",overwrite=T)
@@ -337,9 +359,12 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
       
       SVM <- ksvm(pa ~., data=envtrain)
       e=evaluate( pres_test, backg_test,SVM, predictors)
-      tr=threshold(e,"spec_sens")
+      tr=e@t[which.max(e@TPR + e@TNR)]
       aval[i+15,]=threshold(e)
       aval[i+15,7]="SVM"
+      aval[i+15,8] = e@auc
+      aval[i+15,9] = max(e@TPR + e@TNR) - 1
+      aval[i+15,10] = tr      
       SVM.mod=predict(predictors,SVM)
       writeRaster(SVM.mod,paste0("./modelos/","SVM_",i,"_con.tif"),format="GTiff",overwrite=T)
       writeRaster(SVM.mod>tr,paste0("./modelos/bin/","SVM_",i,"_bin.tif"),format="GTiff",overwrite=T)
@@ -383,7 +408,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   values(mm)=values(mm)/mm@data@max
   
   names(aval)[1:6]=names(threshold(e))
-  names(aval)[7]="Algoritmo"
+  names(aval)[7:10]=c("Algoritmo","AUC","TSS","TSSth")
   
   writeRaster(mm,paste0("./final/","Geral_",'ensemble',".tif"),format="GTiff",overwrite=T)
   write.table(na.omit(aval),"Avaliação.csv",sep=";",dec=".")
