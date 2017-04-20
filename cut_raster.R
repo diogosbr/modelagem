@@ -10,7 +10,7 @@ cut.raster=function(raster.dir,shape.dir,ext=".asc",plot=F,trim=F){
   
   #Definir shape para cortar
   if(missing(shape.dir)){stop("Não selecionou o shape de corte")
-    } else(shape= maptools::readShapeSpatial (shape.dir))
+    } else(rgdal::readOGR(list.files(shape.dir,pattern = ".shp",full.names = T)[1]))
   
   #subsetar
   #MA_CAA=brasil2[brasil2$CD_LEGENDA=="MATA ATL?NTICA"|brasil2$CD_LEGENDA=="CAATINGA",]
