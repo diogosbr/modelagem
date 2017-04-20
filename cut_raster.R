@@ -10,8 +10,9 @@ cut.raster=function(raster.dir,shape.dir,extension=".asc",plot=F,trim=F){
   
   #Definir shape para cortar
   if(missing(shape.dir)){stop("Não selecionou o shape de corte")
-    } else(rgdal::readOGR(list.files(shape.dir,pattern = ".shp",full.names = T)[1]))
-  
+    } else(shape=rgdal::readOGR(list.files(shape.dir,pattern = ".shp",full.names = T)[1]))
+    #shape= maptools::readShapeSpatial (shape.dir)
+    #
   #subsetar
   #MA_CAA=brasil2[brasil2$CD_LEGENDA=="MATA ATL?NTICA"|brasil2$CD_LEGENDA=="CAATINGA",]
   
@@ -20,6 +21,7 @@ cut.raster=function(raster.dir,shape.dir,extension=".asc",plot=F,trim=F){
     wrdclim <- list.files(pattern=extension, full.names=TRUE )
     predictors <- raster::stack(wrdclim); #predictors
   }else(predictors=raster::stack(list.files(raster.dir,pattern=ext,full.names = TRUE)))
+    
   
   #plotando a primeira variavel 
   if(plot==T){
