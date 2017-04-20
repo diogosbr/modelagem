@@ -20,7 +20,7 @@ cut.raster=function(raster.dir,shape.dir,extension=".asc",plot=F,trim=F){
   if(missing(raster.dir)){
     wrdclim <- list.files(pattern=extension, full.names=TRUE )
     predictors <- raster::stack(wrdclim); #predictors
-  }else(predictors=raster::stack(list.files(raster.dir,pattern=ext,full.names = TRUE)))
+  }else(predictors=raster::stack(list.files(raster.dir,pattern=extension,full.names = TRUE)))
     
   
   #plotando a primeira variavel 
