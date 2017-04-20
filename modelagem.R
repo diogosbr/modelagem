@@ -1,5 +1,5 @@
 modelos=function(coord,k=3,diretorio="teste",plot=T,
-                 bc=T,mx=T,dm=T,GLM=T,RF=T,SVM=T,mah=F){
+                 bc=T,mx=T,GLM=T,RF=T,SVM=T,dm=F,mah=F){
   original=getwd()
   #escolha da pasta 
   dir.create(paste0("./",diretorio))
