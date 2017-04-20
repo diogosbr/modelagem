@@ -1,5 +1,5 @@
 
-cut.raster=function(raster.dir,shape.dir,ext=".asc",plot=F,trim=F){
+cut.raster=function(raster.dir,shape.dir,extension=".asc",plot=F,trim=F){
   
   require(raster)
   #original=getwd()
@@ -17,7 +17,7 @@ cut.raster=function(raster.dir,shape.dir,ext=".asc",plot=F,trim=F){
   
   #Lendo os rasters
   if(missing(raster.dir)){
-    wrdclim <- list.files(pattern=ext, full.names=TRUE )
+    wrdclim <- list.files(pattern=extension, full.names=TRUE )
     predictors <- raster::stack(wrdclim); #predictors
   }else(predictors=raster::stack(list.files(raster.dir,pattern=ext,full.names = TRUE)))
   
