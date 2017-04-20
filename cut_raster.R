@@ -37,13 +37,13 @@ cut.raster=function(raster.dir,shape.dir,extension=".asc",plot=F,trim=F){
     for(i in 1:length(names(predictors)))
     {
       ini1=Sys.time()
-      crop(predictors[[i]],extent(shape),filename=paste("./Mask_temp", '/',names(predictors)[i],sep="",".tif"),overwrite=TRUE) 
-      croped=list.files("./Mask_temp",pattern='.tif', full.names=TRUE )
-      mask(raster(croped[i]),shape,filename= paste("./Cortados","/", names(predictors)[i],sep="",".tif"),overwrite=TRUE)
+      crop(predictors[[i]],extent(shape),filename=paste("./Mask_temp", '/',names(predictors)[i],sep="",extension),overwrite=TRUE) 
+      croped=list.files("./Mask_temp",pattern=extension, full.names=TRUE )
+      mask(raster(croped[i]),shape,filename= paste("./Cortados","/", names(predictors)[i],sep="",extension),overwrite=TRUE)
       
       #if(i!="1"){cat("\r")}
       print(Sys.time())
-      cat("\n",paste("TÃ¡ indo",i))
+      cat("\n",paste("Tá indo",i))
       
       fim1= Sys.time()
       cat(paste("\n",round(as.numeric(fim1-ini1),2),units(fim1-ini1)))
@@ -60,14 +60,14 @@ cut.raster=function(raster.dir,shape.dir,extension=".asc",plot=F,trim=F){
     for(i in 1:length(names(predictors)))
     {
       ini1=Sys.time()
-      crop(predictors[[i]],extent(shape),filename=paste(".\\Mask_temp", '\\',names(predictors)[i],sep="",".tif"),overwrite=TRUE) 
-      croped=list.files(".\\Mask_temp",pattern='.tif', full.names=TRUE )
-      mask(raster(croped[i]),shape,filename= paste(".\\Mask_temp2","\\", names(predictors)[i],sep="",".tif"),overwrite=TRUE)
+      crop(predictors[[i]],extent(shape),filename=paste(".\\Mask_temp", '\\',names(predictors)[i],sep="",extension),overwrite=TRUE) 
+      croped=list.files(".\\Mask_temp",pattern=extension, full.names=TRUE )
+      mask(raster(croped[i]),shape,filename= paste(".\\Mask_temp2","\\", names(predictors)[i],sep="",extension),overwrite=TRUE)
       
       writeRaster(
         trim(
           raster(
-            list.files(".\\Mask_temp2", pattern='.tif', full.names=TRUE )[i]
+            list.files(".\\Mask_temp2", pattern=extension, full.names=TRUE )[i]
           )
         )
         ,filename=paste(".\\Cortados","\\", names(predictors)[i],".tif",sep='')
