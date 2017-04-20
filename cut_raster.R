@@ -1,5 +1,5 @@
 
-cut=function(raster.dir,shape.dir,ext=".asc",plot=F,trim=F){
+cut.raster=function(raster.dir,shape.dir,ext=".asc",plot=F,trim=F){
   
   require(raster)
   #original=getwd()
@@ -9,7 +9,7 @@ cut=function(raster.dir,shape.dir,ext=".asc",plot=F,trim=F){
   if(dir.exists("Cortados")==F){dir.create("Cortados")}
   
   #Definir shape para cortar
-  if(missing(shape.dir)){stop("N�o selecionou o shape de corte")
+  if(missing(shape.dir)){stop("Não selecionou o shape de corte")
     } else(shape= maptools::readShapeSpatial (shape.dir))
   
   #subsetar
@@ -41,7 +41,7 @@ cut=function(raster.dir,shape.dir,ext=".asc",plot=F,trim=F){
       
       #if(i!="1"){cat("\r")}
       print(Sys.time())
-      cat("\n",paste("Tá indo",i))
+      cat("\n",paste("TÃ¡ indo",i))
       
       fim1= Sys.time()
       cat(paste("\n",round(as.numeric(fim1-ini1),2),units(fim1-ini1)))
@@ -72,7 +72,7 @@ cut=function(raster.dir,shape.dir,ext=".asc",plot=F,trim=F){
         , format="GTiff", overwrite=TRUE, NAflag=-9999)
       cat("\r")
       print(Sys.time())
-      cat("\n",paste("Tá indo",i))
+      cat("\n",paste("TÃ¡ indo",i))
       fim1= Sys.time()
       cat(paste("\n",round(as.numeric(fim1-ini1),2),units(fim1-ini1)))
       if(i==length(names(predictors))){cat("\n","Acabou!","\n")
