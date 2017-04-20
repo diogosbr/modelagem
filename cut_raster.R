@@ -22,7 +22,7 @@ cut.raster=function(raster.dir,shape.dir,ext=".asc",plot=F,trim=F){
   }else(predictors=raster::stack(list.files(raster.dir,pattern=ext,full.names = TRUE)))
   
   #plotando a primeira variavel 
-  if(plot=T){
+  if(plot==T){
     plot(predictors[[1]])
     plot(shape,add=T)
   }
@@ -30,7 +30,7 @@ cut.raster=function(raster.dir,shape.dir,ext=".asc",plot=F,trim=F){
   #loop para cortar todos os rasters
   
   #sem trim
-  if(trim=F){
+  if(trim==F){
     ini=Sys.time()
     for(i in 1:length(names(predictors)))
     {
