@@ -5,7 +5,7 @@ Funções para auxiliar a modelagem de distribuição de nicho
 ### *cut.raster*
 Função para recortar as variáveis ambientais
 
-### *cor.raster*
+### *cor.data*
 Função para verificar a correlação entre as variáveis ambientais
 
 ### *clean*
