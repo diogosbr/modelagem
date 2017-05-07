@@ -16,7 +16,7 @@ Função que roda os algoritmos
 
 ---
 # Como usar
-###cut.raster (raster.dir,shape.dir,extension=".asc",plot=F,trim=F)
+##cut.raster (raster.dir,shape.dir,extension=".asc",plot=F,trim=F)
 
 Argumentos:
 
@@ -27,9 +27,11 @@ Argumentos:
  * trim: se for TRUE os NAs gerados após o corte dos rasters são removidos. FALSE é o padrão.
 
 Exemplo de uso:
+```Rscript
+cut.raster(raster.dir = "ambientais" , shape.dir = "MA" , extension = ".tif")
+```
 
-
-###modelos (coord,k=3,diretorio="teste",plot=T,
+##modelos (coord,k=3,diretorio="teste",plot=T,
                  bc=T,mx=T,GLM=T,RF=T,SVM=T,dm=F,mah=F)
 
 Argumentos:
@@ -44,11 +46,7 @@ Importante:
 necessário criar um objeto chamado *predictors* que contém todas as variáveis preditoras
 
 Exemplo de uso:
-
-
-And here's some code! :+1:
-
 ```Rscript
-modelos()
+#Roda somente o Bioclim
+modelos(coord = pontos , diretorio = "solanum")
 ```
-
