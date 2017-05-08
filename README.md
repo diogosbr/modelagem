@@ -24,8 +24,11 @@ cut.raster(raster.dir , shape.dir , extension = ".asc" , plot = TRUE , trim = FA
 **Exemplo:**
 
     wc=raster::getData('worldclim', var = 'bio' , res = 10 )
-    for(x in c("shx","shp",'cpg','dbf','csv','prj')){download.file(paste0("https://raw.github.com/diogosbr/modelagem/master/Dataset/shape/BRA_adm0.",x),destfile = paste0("br.",x),quiet = T)}
-    cut.raster(raster.dir = "wc10" , shape.dir = "./" , extension = ".tif")
+    unlink("./wc10/bio_10m_bil.zip")
+    download.file("http://biogeo.ucdavis.edu/data/gadm2.8/shp/BRA_adm_shp.zip", destfile = "bra.zip") 
+    unzip("bra.zip",exdir = "./brasil")
+    unlink("bra.zip")
+    cut.raster(raster.dir = "wc10" , shape.dir = "brasil" , extension = ".bil")
 
 ---
 
