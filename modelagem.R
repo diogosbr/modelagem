@@ -19,8 +19,8 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
     download.file(url, dest="maxent.zip", mode="wb") 
     unzip ("maxent.zip",files="maxent.jar", exdir = system.file("java", package="dismo"))
     unlink("maxent.zip")
-    warning("Maxent foi colocado no diret√≥rio")
-  }else(cat("\nMaxent.jar est√° na pasta java do dismo\n"))
+    warning("Maxent foi colocado no diretÛrio")
+  }else(cat("\nMaxent.jar est· na pasta java do dismo\n"))
   
   #Abrindo bibliotecas necess√°rias####
   library(maps)
@@ -72,7 +72,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
     #Bioclim #####
     
     for(i in 1:k){
-      cat(c("\n","Come√ßou a parti√ß√£o", i,"Bioclim"))
+      cat(c("\n","ComeÁou a partiÁ„o", i,"Bioclim"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -115,7 +115,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
     #Maxent #####
     
     for(i in 1:k){
-      cat(c("\n","Come√ßou a parti√ß√£o", i,"Maxent"))
+      cat(c("\n","ComeÁou a partiÁ„o", i,"Maxent"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -158,7 +158,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
     #Domain #####
     
     for(i in 1:k){
-      cat(c("\n","Come√ßou a parti√ß√£o", i,"Domain"))
+      cat(c("\n","ComeÁou a partiÁ„o", i,"Domain"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -201,7 +201,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
     #Mahalanobis #####
     
     for(i in 1:k){
-      cat(c("\n","Come√ßou a parti√ß√£o", i,"Mahalanobis"))
+      cat(c("\n","ComeÁou a partiÁ„o", i,"Mahalanobis"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -243,7 +243,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   if(GLM==T){
     #GLM ####
     for(i in 1:k){
-      cat(c("\n","Come√ßou a parti√ß√£o", i,"GLM"))
+      cat(c("\n","ComeÁou a partiÁ„o", i,"GLM"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
@@ -294,7 +294,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
     #Random Forest ####
     library(randomForest)
     for(i in 1:k){
-      cat(c("\n","Come√ßou a parti√ß√£o", i,"RandomForest"))
+      cat(c("\n","ComeÁou a partiÁ„o", i,"RandomForest"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
@@ -345,7 +345,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
     #SVM ####
     library(kernlab)
     for(i in 1:k){
-      cat(c("\n","Come√ßou a parti√ß√£o", i,"SVM"))
+      cat(c("\n","ComeÁou a partiÁ„o", i,"SVM"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
@@ -411,7 +411,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   names(aval)[7:10]=c("Algoritmo","AUC","TSS","TSSth")
   
   writeRaster(mm,paste0("./final/","Geral_",'ensemble',".tif"),format="GTiff",overwrite=T)
-  write.table(na.omit(aval),"Avalia√ß√£o.csv",sep=";",dec=".")
+  write.table(na.omit(aval),"AvaliaÁ„o.csv",sep=";",dec=".")
   
   png(paste0("./png/",'_Geral_','ensemble','.png'))
   plot(mm,main=paste0("Ensemble ","geral"))
@@ -422,7 +422,7 @@ modelos=function(coord,k=3,diretorio="teste",plot=T,
   points(pts1)
   dev.off()
   
-  ### Modelagem at√© aqui ###
+  ### Modelagem atÈ aqui ###
   
   if(plot==T){
     plot(mm)
