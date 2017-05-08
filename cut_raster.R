@@ -80,7 +80,7 @@ cut.raster=function(raster.dir , shape.dir , extension = ".asc" , plot=TRUE , tr
   
   #plotando a primeira variavel cortada
   if(plot==T){
-    plot(raster(list.files("./cortados", pattern=extension, full.names=TRUE )[1]))
+    plot(raster(list.files("./cortados", pattern="", full.names=TRUE )[1],native=TRUE))
     plot(shape,add=T)
   }
   unlink("Mask_temp",recursive = T,force = T)
