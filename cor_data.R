@@ -1,11 +1,11 @@
 cor.data=
-  function(predictors,plot=F){
-    backg <- randomPoints(predictors, n=1000, extf = 1.25)
+  function(predictors , plot = TRUE){
+    backg <- randomPoints(predictors , n = 1000 , extf = 1.25)
     colnames(backg) = c( 'long' ,  'lat' )
-    backvalues=extract(predictors,backg)
+    backvalues = extract(predictors,backg)
     
     if(plot==T){
-      panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...){
+      panel.cor <- function(x , y , digits = 2, prefix = "" , cex.cor , ...){
         usr <- par("usr"); on.exit(par(usr))
         par(usr = c(0, 1, 0, 1))
         r <- abs(cor(x, y))
@@ -17,6 +17,6 @@ cor.data=
     
     pairs(backvalues,lower.panel = panel.smooth, upper.panel = panel.cor)
     }
-    return(round(cor(backvalues),2))
+    return(round(cor(backvalues) , 2))
   }
 

@@ -1,5 +1,5 @@
 
-cut.raster=function(raster.dir,shape.dir,extension=".asc",plot=F,trim=F){
+cut.raster=function(raster.dir , shape.dir , extension = ".asc" , plot=TRUE , trim=FALSE ,teste = FALSE){
   
   require(raster)
   #original=getwd()
@@ -9,8 +9,9 @@ cut.raster=function(raster.dir,shape.dir,extension=".asc",plot=F,trim=F){
   if(dir.exists("Cortados")==F){dir.create("Cortados")}
   
   #Definir shape para cortar
-  if(missing(shape.dir)){stop("Não selecionou o shape de corte")
+  if(missing(shape.dir)){stop("Não selecionou a pasta contendo o shape de corte")
   } else(shape=rgdal::readOGR(list.files(shape.dir,pattern = ".shp",full.names = T)[1]))
+  
   #shape= maptools::readShapeSpatial (shape.dir)
   #
   #subsetar
@@ -22,13 +23,7 @@ cut.raster=function(raster.dir,shape.dir,extension=".asc",plot=F,trim=F){
     predictors <- raster::stack(wrdclim); #predictors
   }else(predictors=raster::stack(list.files(raster.dir,pattern=extension,full.names = TRUE)))
   
-  
-  #plotando a primeira variavel 
-  if(plot==T){
-    plot(predictors[[1]])
-    plot(shape,add=T)
-  }
-  
+
   #loop para cortar todos os rasters
   
   #sem trim
@@ -83,6 +78,11 @@ cut.raster=function(raster.dir,shape.dir,extension=".asc",plot=F,trim=F){
     }
   }
   
+  #plotando a primeira variavel cortada
+  if(plot==T){
+    plot(raster(list.files("./cortados", pattern=extension, full.names=TRUE )[1]))
+    plot(shape,add=T)
+  }
   unlink("Mask_temp",recursive = T,force = T)
   unlink("Mask_temp2",recursive = T,force = T)
 }
