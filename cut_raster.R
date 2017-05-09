@@ -20,7 +20,7 @@ cut.raster=function(raster.dir , shape.dir , extension = ".asc" , plot=TRUE , tr
   #Lendo os rasters
   if(missing(raster.dir)){
     wrdclim <- list.files(pattern=extension, full.names=TRUE )
-    predictors <- raster::stack(wrdclim); #predictors
+    predictors <- raster::stack(wrdclim) #predictors
   }else(predictors=raster::stack(list.files(raster.dir,pattern=extension,full.names = TRUE)))
   
 
@@ -69,7 +69,7 @@ cut.raster=function(raster.dir , shape.dir , extension = ".asc" , plot=TRUE , tr
         , format="GTiff", overwrite=TRUE, NAflag=-9999)
       cat("\r")
       print(Sys.time())
-      cat("\n",paste("TÃ¡ indo",i))
+      cat("\n",paste("Tá indo",i))
       fim1= Sys.time()
       cat(paste("\n",round(as.numeric(fim1-ini1),2),units(fim1-ini1)))
       if(i==length(names(predictors))){cat("\n","Acabou!","\n")
