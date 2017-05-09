@@ -1,4 +1,6 @@
 cor.data = function(predictors, plot = TRUE) {
+    require(raster)
+    require(dismo)
     backg <- randomPoints(predictors, n = 1000, extf = 1.25)
     colnames(backg) = c("long", "lat")
     backvalues = extract(predictors, backg)
