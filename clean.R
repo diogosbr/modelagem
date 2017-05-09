@@ -13,7 +13,7 @@ clean = function(coord, predictors) {
             cat(dim(pts)[1] - dim(pts1)[1], "pontos retirados\n")
             cat(dim(pts1)[1], "pontos espacialmente únicos\n")
             # pts1
-            names(pts1) = c("long", "lat")
+            names(pts1) = c("long", "lat")#
             return(pts1)
         } else (cat("Indique o objeto com as variáveis preditoras"))
     } else (stop("Tabela de coordenadas tem mais de duas colunas.\nEsta tabela deve ter apenas long e lat, nesta ordem."))
