@@ -4,6 +4,7 @@ toKML = function(modelo, name = "meuKML", zeros = FALSE, open = FALSE){
   for (p in setdiff(packages, installed.packages()[, "Package"])) {
     install.packages(p,dependencies = T)
   }
+  require(plotKML)
   if(missing(modelo)){stop("Informe o nome do objeto que contem o raster do modelo")}
   if(zeros==FALSE){
     values(modelo)[values(modelo)==0]=NA
