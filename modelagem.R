@@ -1,5 +1,7 @@
-modelos = function(coord, k = 3, diretorio = "teste", plot = T, bc = T, mx = F, GLM = F, RF = F, 
+modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx = F, GLM = F, RF = F, 
     SVM = F, dm = F, mah = F) {
+    
+    if(missing(abio)){stop("Informe as variáveis abióticas")}else(predictors=abio)
     original = getwd()
     # escolha da pasta
     dir.create(paste0("./", diretorio))
@@ -438,7 +440,7 @@ modelos = function(coord, k = 3, diretorio = "teste", plot = T, bc = T, mx = F, 
     names(aval)[7:10] = c("Algoritmo", "AUC", "TSS", "TSSth")
     
     writeRaster(mm, paste0("./final/", "Geral_", "ensemble", ".tif"), format = "GTiff", overwrite = T)
-    write.table(na.omit(aval), "Avaliação.csv", sep = ";", dec = ".")
+    write.table(na.omit(aval), "Avaliação.csv", sep = ";", dec = ".",row.names = F)
     
     png(paste0("./png/", "_Geral_", "ensemble", ".png"))
     plot(mm, main = paste0("Ensemble ", "geral"))
