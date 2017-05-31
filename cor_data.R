@@ -1,9 +1,12 @@
 cor.data = function(predictors, plot = TRUE) {
     require(raster)
     require(dismo)
-    backg <- randomPoints(predictors, n = 1000, extf = 1.25)
-    colnames(backg) = c("long", "lat")
-    backvalues = extract(predictors, backg)
+    if(class(predictors)=="RasterStack"|class(predictors)=="RasterLayer"){
+      backg <- randomPoints(predictors, n = 1000)
+      colnames(backg) = c("long", "lat")
+      backvalues = extract(predictors, backg)
+    }else(backvalues=predictors)
+    
     
     if (plot == T) {
         panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...) {
@@ -22,4 +25,3 @@ cor.data = function(predictors, plot = TRUE) {
     }
     return(round(cor(backvalues), 2))
 }
-
