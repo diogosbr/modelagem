@@ -27,7 +27,7 @@ cor.data = function(predictors, plot = TRUE) {
             h <- hist(x, plot = FALSE)
             breaks <- h$breaks; nB <- length(breaks)
             y <- h$counts; y <- y/max(y)
-            rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
+            rect(breaks[-nB], 0, breaks[-1], y, col = "gray", ...)
         }
         
         pairs(backvalues, lower.panel = panel.smooth, diag.panel= panel.hist, upper.panel = panel.cor)
