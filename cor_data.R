@@ -18,7 +18,7 @@ cor.data = function(predictors, plot = TRUE) {
             text(0.5, 0.5, txt, cex = cex.cor * r)
         }
         
-        pairs(backvalues, lower.panel = panel.smooth, upper.panel = panel.cor)
+        pairs(backvalues, lower.panel = panel.smooth,diag.panel= panel.hist, upper.panel = panel.cor)
     }
     return(round(cor(backvalues), 2))
 }
