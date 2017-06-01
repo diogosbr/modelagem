@@ -1,4 +1,4 @@
-source("cut_raster.r")  #carrega função para cortar raster
+source("https://raw.githubusercontent.com/diogosbr/modelagem/master/cut_raster.r")  #carrega funÃ§Ã£o para cortar raster
 
 wc = raster::getData("worldclim", var = "bio", res = 10)
 unlink("./wc10/bio_10m_bil.zip")
@@ -8,13 +8,13 @@ unlink("bra.zip")
 cut.raster(raster.dir = "wc10", shape.dir = "brasil", extension = ".bil")
 
 
-source("cor_data.r")  #carrega função para ver correlação entre rasters
+source("https://raw.githubusercontent.com/diogosbr/modelagem/master/cor_data.r")  #carrega funÃ§Ã£o para ver correlaÃ§Ã£o entre rasters
 
 wc = raster::getData("worldclim", var = "bio", res = 10)
 cor.data(predictors = wc)
 
 
-source("clean.r")  #carrega função para selecionar apenas pontos espacialmente únicos e sem NA
+source("https://raw.githubusercontent.com/diogosbr/modelagem/master/clean.r")  #carrega funÃ§Ã£o para selecionar apenas pontos espacialmente Ãºnicos e sem NA
 
 library(dismo)
 data(acaule)
@@ -23,7 +23,7 @@ wc = raster::getData("worldclim", var = "bio", res = 10)
 clean(coord = pontos, predictors = wc)
 
 
-source("modelos.r")  #carrega função para gerar os modelos
+source("https://raw.githubusercontent.com/diogosbr/modelagem/master/modelos.r")  #carrega funÃ§Ã£o para gerar os modelos
 
 # Roda somente o Bioclim
 pontos = as.data.frame(na.omit(cbind(acaule$lon, acaule$lat)))
