@@ -1,11 +1,14 @@
-﻿# Modelagem de nicho
+# Modelagem de nicho
 Funções para auxiliar a modelagem de distribuição de nicho
 
-##Índice
+##Funções disponíveis
 * cut.raster
 * cor.data
 * clean
 * modelos 
+* toKML
+
+No arquivo *testing.R* tem exemplos os exemplos para testar as funções. 
 
 ## **Funções** 
 ### *cut.raster()*
@@ -16,7 +19,7 @@ cut.raster(raster.dir , shape.dir , extension = ".asc" , plot = TRUE , trim = FA
 **Argumentos:**
 
  * raster.dir: diretório que contém os rasters a serem cortados. Se não for informado, então vai procurar os rasters na pasta local.
- * shape.dir: diretório que stá o shape que será usado como máscara para cortar os rasters. Obrigatório.
+ * shape.dir: diretório que está o shape que será usado como máscara para cortar os rasters. Obrigatório.
  * extension: conjuntos de caracteres com a extensão dos *ratsers*. ".asc" é o padrão.
  * plot: plota os rasters. TRUE é o padrão.
  * trim: se for TRUE os NAs gerados após o corte dos rasters são removidos. FALSE é o padrão.
@@ -91,3 +94,23 @@ Exemplo de uso:
     predictors=wc
 	modelos(coord = pontos , diretorio = "solanum")
     
+---
+### *toKML()*
+Função que roda os algoritmos
+
+toKML (modelo, name = "meuKML", zeros = FALSE, open = FALSE) 
+
+**Argumentos:**
+
+ * modelo: *raster* do modelo. 
+ * name: nome do arquivo KML a ser gerado.
+ * zeros: se for *TRUE*, os valores 0 são mantidos no KML. Caso contrário, são substituídos por NA.
+ * open: se *TRUE* o arquivo KML é aberto no *Google Earth*. 
+
+
+Exemplo de uso:
+
+    library(dismo)
+    fnames <- list.files(path=paste(system.file(package="dismo"), '/ex', sep=''), pattern='grd', full.names=TRUE )
+    predictors <- stack(fnames)
+    toKML(predictors[[4]],open=T)
