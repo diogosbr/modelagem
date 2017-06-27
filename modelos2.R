@@ -1,5 +1,5 @@
 modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx = F, GLM = F, RF = F, 
-                   SVM = F, dm = F, mah = F) {
+                   SVM = F, dm = F, mah = F, ma) {
   
   if(missing(abio)){stop("Informe as variáveis abióticas")}else(predictors=abio)
   original = getwd()
@@ -57,25 +57,28 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   # cont=table(c(bc,mx,dm,GLM,RF,SVM,mah)) aval=as.data.frame(matrix(NA,k*cont[2],7))
   aval = as.data.frame(matrix(NA, k * 7, 10))
   
-  source("https://raw.githubusercontent.com/Model-R/Back-end/master/ENM/fct/createBuffer.R")
+  #source("https://raw.githubusercontent.com/Model-R/Back-end/master/ENM/fct/createBuffer.R")
   #backg <- randomPoints(predictors, n = 1000, extf = 1.25)
   pts2=pts1
-  coordinates(pts2) <- ~long + lat
-  dist.buf <- max(spDists(x = coord, longlat = FALSE, segments = TRUE))
+  names(pts2)=c("lon",'lat')
+  coordinates(pts2) <- ~lon + lat
+  dist.buf <- mean(spDists(x = coord, longlat = FALSE, segments = TRUE))
   
   buffer <- raster::buffer(pts2, width = dist.buf, dissolve = TRUE)
   buffer <- SpatialPolygonsDataFrame(buffer, data = as.data.frame(buffer@plotOrder), 
                                      match.ID = FALSE)
   crs(buffer) <- crs(predictors)
-  r_buffer <- crop(predictors, buffer)
-  r_buffer <- mask(r_buffer, buffer)
-  backgr <- randomPoints(r_buffer, 1000)
+  
+  buffer=rgeos::gIntersection(ma, buffer, byid = T)
+  backg = spsample(buffer, 1000, type="random")
+  #r_buffer <- crop(predictors, buffer)
+  #r_buffer <- mask(r_buffer, buffer)
+  #backgr <- randomPoints(r_buffer, 1000)
   rm(buffer)
   rm(pts2)
   gc()
   
-  
-  colnames(backg) = c("long", "lat")
+  #colnames(backg) = c("long", "lat")
   backvalues = extract(predictors, backg)
   
   group.p <- kfold(pts1, k)
