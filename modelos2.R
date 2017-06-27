@@ -62,13 +62,13 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   pts2=pts1
   names(pts2)=c("lon",'lat')
   coordinates(pts2) <- ~lon + lat
-  dist.buf <- mean(spDists(x = coord, longlat = FALSE, segments = TRUE))
+  dist.buf <- mean(spDists(x = pts1, longlat = FALSE, segments = TRUE))
   
   buffer <- raster::buffer(pts2, width = dist.buf, dissolve = TRUE)
   buffer <- SpatialPolygonsDataFrame(buffer, data = as.data.frame(buffer@plotOrder), 
                                      match.ID = FALSE)
   crs(buffer) <- crs(predictors)
-  
+  crs(ma) = crs(predictors)
   buffer=rgeos::gIntersection(ma, buffer, byid = T)
   backg = spsample(buffer, 1000, type="random")
   backg = as.data.frame(backg)
@@ -79,7 +79,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   rm(pts2)
   gc()
   
-  #colnames(backg) = c("long", "lat")
+  colnames(backg) = c("long", "lat")
   backvalues = extract(predictors, backg)
   
   group.p <- kfold(pts1, k)
@@ -297,7 +297,17 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       envtrain <- extract(predictors, train)
       envtrain <- data.frame(cbind(pa = pb_train, envtrain))
       
-      GLM <- glm(pa ~ ., family = gaussian(link = "identity"), data = envtrain)
+      envteste_p <- extract(predictors, pres_train)
+      envteste_p <- data.frame(envteste_p)
+      envteste_a <- extract(predictors, backg_train)
+      envteste_a <- data.frame(envteste_a)
+      
+      null.model <- glm(pa ~ 1, data = envtrain, family = "binomial")
+      full.model <- glm(pa ~ ., data = envtrain, family = "binomial")
+      GLM <- step(object = null.model, scope = formula(full.model), direction = "both", 
+                  trace = F)
+      
+      #GLM <- glm(pa ~ ., family = gaussian(link = "identity"), data = envtrain)
       e = evaluate(pres_test, backg_test, GLM, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
       aval[i + 9, ] = threshold(e)
