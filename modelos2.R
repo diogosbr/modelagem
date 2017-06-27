@@ -71,6 +71,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   
   buffer=rgeos::gIntersection(ma, buffer, byid = T)
   backg = spsample(buffer, 1000, type="random")
+  backg = as.data.frame(backg)
   #r_buffer <- crop(predictors, buffer)
   #r_buffer <- mask(r_buffer, buffer)
   #backgr <- randomPoints(r_buffer, 1000)
