@@ -295,7 +295,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       train <- rbind(pres_train, backg_train)
       pb_train <- c(rep(1, nrow(pres_train)), rep(0, nrow(backg_train)))
       envtrain <- extract(predictors, train)
-      envtrain <- data.frame(cbind(pa = pb_train, envtrain))
+      envtrain <- data.frame(na.omit(cbind(pa = pb_train, envtrain)))
       
       #envteste_p <- extract(predictors, pres_train)
       #envteste_p <- data.frame(envteste_p)
@@ -360,7 +360,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       train <- rbind(pres_train, backg_train)
       pb_train <- c(rep(1, nrow(pres_train)), rep(0, nrow(backg_train)))
       envtrain <- extract(predictors, train)
-      envtrain <- data.frame(cbind(pa = pb_train, envtrain))
+      envtrain <- data.frame(na.omit(cbind(pa = pb_train, envtrain)))
       
       RF <- randomForest(pa ~ ., data = envtrain)
       e = evaluate(pres_test, backg_test, RF, predictors)
@@ -416,7 +416,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       train <- rbind(pres_train, backg_train)
       pb_train <- c(rep(1, nrow(pres_train)), rep(0, nrow(backg_train)))
       envtrain <- extract(predictors, train)
-      envtrain <- data.frame(cbind(pa = pb_train, envtrain))
+      envtrain <- data.frame(na.omit(cbind(pa = pb_train, envtrain)))
       
       SVM <- ksvm(pa ~ ., data = envtrain)
       e = evaluate(pres_test, backg_test, SVM, predictors)
