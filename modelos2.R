@@ -69,7 +69,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   crs(buffer) <- crs(predictors)
   r_buffer <- crop(predictors, buffer)
   r_buffer <- mask(r_buffer, buffer)
-  backgr <- randomPoints(r_buffer, n.back)
+  backgr <- randomPoints(r_buffer, 1000)
   rm(buffer)
   rm(pts2)
   gc()
