@@ -1,5 +1,5 @@
 modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx = F, GLM = F, RF = F, 
-                   SVM = F, dm = F, mah = F, ma) {
+                   SVM = F, dm = F, mah = F, proj, buffer, geo.filt, br) {
   
   if(missing(abio)){stop("Informe as variáveis abióticas")}else(predictors=abio)
   original = getwd()
@@ -8,10 +8,9 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   setwd(paste0("./", diretorio))
   
   # instalando pacotes
-  packages = c("maps", "mapdata", "maptools", "dismo", "rgdal", "raster", "jsonlite", "rJava", 
-               "randomForest", "kernlab")
+  packages = c("dismo", "rgdal", "raster", "randomForest", "kernlab")
   for (p in setdiff(packages, installed.packages()[, "Package"])) {
-    install.packages(p)
+    install.packages(p, dependencies = T)
   }
   
   # MaxEnt .jar#### baixa e descompacta o maxent java
@@ -22,20 +21,15 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     unzip("maxent.zip", files = "maxent.jar", exdir = system.file("java", package = "dismo"))
     unlink("maxent.zip")
     warning("Maxent foi colocado no diretório")
-  } else (cat("\nMaxent.jar está na pasta java do dismo\n"))
+  } 
   
   # Abrindo bibliotecas necessÃ¡rias####
-  library(maps)
-  library(mapdata)
-  library(maptools)
   library(dismo)
   library(rgdal)
-  library(raster)
   
-  
-  ##------------------##
-  # Pontos de ocorrÃªncia
-  ##------------------##
+  ##--------------------------##
+  # Pontos de ocorrÃªncia####
+  ##------------------------##
   
   # Extrair os valores ambientais das localidades onde hÃ¡ registros de ocorrÃªncia
   if (exists("coord")) {
@@ -48,36 +42,42 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   source("https://raw.githubusercontent.com/diogosbr/modelagem/master/clean.R")
   pts1 = clean(pts, predictors = predictors)
   names(pts1) = c("long", "lat")
-  # presvals=extract(predictors,pts1)
+  
+  #Filtros geogr�ficos####
+  if(geo.filt){
+    res=0.1666667#10min - 20km
+    r=raster(extent(range(pts1[,1]), range(pts1[,2])) + res)
+    res(r)=res
+    pts1=gridSample(pts1,r, n=1)
+  }
   
   #--------------#
-  # Modelando ####
+  # Modelando #####
   #--------------#
   
-  # cont=table(c(bc,mx,dm,GLM,RF,SVM,mah)) aval=as.data.frame(matrix(NA,k*cont[2],7))
-  aval = as.data.frame(matrix(NA, k * 7, 10))
+  #criando tabela de sa�da para armazenar valores de desempenho dos modelos
+  aval = as.data.frame(matrix(NA, k * 7, 11))
   
-  #source("https://raw.githubusercontent.com/Model-R/Back-end/master/ENM/fct/createBuffer.R")
-  #backg <- randomPoints(predictors, n = 1000, extf = 1.25)
-  pts2=pts1
-  names(pts2)=c("lon",'lat')
-  coordinates(pts2) <- ~lon + lat
-  dist.buf <- mean(spDists(x = pts1, longlat = FALSE, segments = TRUE))
-  
-  buffer <- raster::buffer(pts2, width = dist.buf, dissolve = TRUE)
-  buffer <- SpatialPolygonsDataFrame(buffer, data = as.data.frame(buffer@plotOrder), 
-                                     match.ID = FALSE)
-  crs(buffer) <- crs(predictors)
-  crs(ma) = crs(predictors)
-  buffer=rgeos::gIntersection(ma, buffer, byid = T)
-  backg = spsample(buffer, 1000, type="random")
-  backg = as.data.frame(backg)
-  #r_buffer <- crop(predictors, buffer)
-  #r_buffer <- mask(r_buffer, buffer)
-  #backgr <- randomPoints(r_buffer, 1000)
-  rm(buffer)
-  rm(pts2)
-  gc()
+  #Buffer####
+  if( exists(buffer) ){
+    pts2=pts1
+    names(pts2)=c("lon",'lat')
+    coordinates(pts2) <- ~lon + lat
+    if(buffer=="mean"){
+      dist.buf <- mean(spDists(x = pts1, longlat = FALSE, segments = TRUE))
+    } else(dist.buf <- max(spDists(x = pts1, longlat = FALSE, segments = TRUE)))
+    
+    buffer <- buffer(pts2, width = dist.buf, dissolve = TRUE)
+    buffer <- SpatialPolygonsDataFrame(buffer, data = as.data.frame(buffer@plotOrder), 
+                                       match.ID = FALSE)
+    crs(buffer) <- crs(predictors)
+    crs(br) = crs(predictors)
+    buffer=rgeos::gIntersection(br, buffer, byid = T)
+    backg = spsample(buffer, 1000, type="random")
+    backg = as.data.frame(backg)
+    rm(buffer)
+    rm(pts2)
+  } else(backg <- randomPoints(predictors, n = 1000, extf = 1.25))
   
   colnames(backg) = c("long", "lat")
   backvalues = extract(predictors, backg)
@@ -109,7 +109,9 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i, 8] = e@auc
       aval[i, 9] = max(e@TPR + e@TNR) - 1
       aval[i, 10] = tr
-      bc.mod = predict(predictors, bc)
+      aval[i,11] = i
+      if(missing(proj)){bc.mod = predict(predictors, bc)
+      }else(bc.mod = predict(proj, bc))
       writeRaster(bc.mod, paste0("./modelos/", "bc_", i, "_con.tif"), format = "GTiff", 
                   overwrite = T)
       writeRaster(bc.mod > tr, paste0("./modelos/bin/", "bc_", i, "_bin.tif"), format = "GTiff", 
@@ -134,6 +136,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
         values(bc.ens) = values(bc.ens)/bc.ens@data@max
         writeRaster(bc.ens, paste0("./temporario/", "bc_", "ensemble_0-1", ".tif"), 
                     format = "GTiff", overwrite = T)
+        rm(bc.ens)
         cat(c("\n", "Terminou Bioclim"))
       }
     }
@@ -156,7 +159,9 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 3, 8] = e@auc
       aval[i + 3, 9] = max(e@TPR + e@TNR) - 1
       aval[i + 3, 10] = tr
-      mx.mod = predict(predictors, mx)
+      aval[i,11] = i
+      if(missing(proj)){mx.mod = predict(predictors, mx)
+      }else(mx.mod = predict(proj, mx))
       writeRaster(mx.mod, paste0("./modelos/", "Maxent_", i, "_con.tif"), format = "GTiff", 
                   overwrite = T)
       writeRaster(mx.mod > tr, paste0("./modelos/bin/", "Maxent_", i, "_bin.tif"), format = "GTiff", 
@@ -203,7 +208,10 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 6, 8] = e@auc
       aval[i + 6, 9] = max(e@TPR + e@TNR) - 1
       aval[i + 6, 10] = tr
-      dm.mod = predict(predictors, dm)
+      aval[i,11] = i
+      if(missing(proj)){dm.mod = predict(predictors, dm)
+      }else(dm.mod = predict(proj, dm))
+      
       writeRaster(dm.mod, paste0("./modelos/", "Domain_", i, "_con.tif"), format = "GTiff", 
                   overwrite = T)
       writeRaster(dm.mod > tr, paste0("./modelos/bin/", "Domain_", i, "_bin.tif"), format = "GTiff", 
@@ -250,7 +258,9 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 18, 8] = e@auc
       aval[i + 17, 9] = max(e@TPR + e@TNR) - 1
       aval[i + 18, 10] = tr
-      mah.mod = predict(predictors, mah)
+      aval[i,11] = i
+      if(missing(proj)){mah.mod = predict(predictors, mah)
+      }else(mah.mod = predict(proj, mah))
       writeRaster(mah.mod, paste0("./modelos/", "Mahalanobis_", i, "_con.tif"), format = "GTiff", 
                   overwrite = T)
       writeRaster(mah.mod > tr, paste0("./modelos/bin/", "Mahalanobis_", i, "_bin.tif"), 
@@ -302,12 +312,12 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       #envteste_a <- extract(predictors, backg_train)
       #envteste_a <- data.frame(envteste_a)
       
-      null.model <- glm(pa ~ 1, data = envtrain, family = "binomial")
-      full.model <- glm(pa ~ ., data = envtrain, family = "binomial")
-      GLM <- step(object = null.model, scope = formula(full.model), direction = "both", 
-                  trace = F)
+      #null.model <- glm(pa ~ 1, data = envtrain, family = "binomial")
+      #full.model <- glm(pa ~ ., data = envtrain, family = "binomial")
+      #GLM <- step(object = null.model, scope = formula(full.model), direction = "both", 
+      #            trace = F)
       
-      #GLM <- glm(pa ~ ., family = gaussian(link = "identity"), data = envtrain)
+      GLM <- glm(pa ~ ., family = gaussian(link = "identity"), data = envtrain)
       e = evaluate(pres_test, backg_test, GLM, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
       aval[i + 9, ] = threshold(e)
@@ -315,8 +325,9 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 9, 8] = e@auc
       aval[i + 9, 9] = max(e@TPR + e@TNR) - 1
       aval[i + 9, 10] = tr
-      
-      GLM.mod = predict(predictors, GLM)
+      aval[i,11] = i
+      if(missing(proj)){GLM.mod = predict(predictors, GLM)
+      }else(GLM.mod = predict(proj, GLM))
       writeRaster(GLM.mod, paste0("./modelos/", "GLM_", i, "_con.tif"), format = "GTiff", 
                   overwrite = T)
       writeRaster(GLM.mod > tr, paste0("./modelos/bin/", "GLM_", i, "_bin.tif"), format = "GTiff", 
@@ -370,8 +381,10 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 12, 8] = e@auc
       aval[i + 12, 9] = max(e@TPR + e@TNR) - 1
       aval[i + 12, 10] = tr
+      aval[i + 12, 11] = i
+      if(missing(proj)){RF.mod = predict(predictors, RF)
+      }else(RF.mod = predict(proj, RF))
       
-      RF.mod = predict(predictors, RF)
       writeRaster(RF.mod, paste0("./modelos/", "RF_", i, "_con.tif"), format = "GTiff", 
                   overwrite = T)
       writeRaster(RF.mod > tr, paste0("./modelos/bin/", "RF_", i, "_bin.tif"), format = "GTiff", 
@@ -426,7 +439,9 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 15, 8] = e@auc
       aval[i + 15, 9] = max(e@TPR + e@TNR) - 1
       aval[i + 15, 10] = tr
-      SVM.mod = predict(predictors, SVM)
+      aval[i + 15, 11] = i
+      if(missing(proj)){SVM.mod = predict(predictors, SVM)
+      }else(SVM.mod = predict(proj, SVM))
       writeRaster(SVM.mod, paste0("./modelos/", "SVM_", i, "_con.tif"), format = "GTiff", 
                   overwrite = T)
       writeRaster(SVM.mod > tr, paste0("./modelos/bin/", "SVM_", i, "_bin.tif"), format = "GTiff", 
@@ -443,7 +458,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
         writeRaster(SVM.ens, paste0("./ensembles/", "SVM_", "ensemble", ".tif"), format = "GTiff", 
                     overwrite = T)
         png(paste0("./png/", "SVM_", "ensemble", ".png"))
-        plot(SVM.ens, main = "Random Forest ensemble")
+        plot(SVM.ens, main = "SVM ensemble")
         dev.off()
         # recorte com TSSth
         values(SVM.ens)[values(SVM.ens) < mean(aval[grep("SVM", aval[, 7]), 2])] = 0
@@ -468,7 +483,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   values(mm) = values(mm)/mm@data@max
   
   names(aval)[1:6] = names(threshold(e))
-  names(aval)[7:10] = c("Algoritmo", "AUC", "TSS", "TSSth")
+  names(aval)[7:10] = c("Algoritmo", "AUC", "TSS", "TSSth", "Parti��o")
   
   writeRaster(mm, paste0("./final/", "Geral_", "ensemble", ".tif"), format = "GTiff", overwrite = T)
   write.table(na.omit(aval), "Avaliação.csv", sep = ";", dec = ".",row.names = F)
