@@ -44,7 +44,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   names(pts1) = c("long", "lat")
   
   #Filtros geograficos####
-  if(geo.filt=T){
+  if(geo.filt==T){
     res=0.1666667#10min - 20km
     r=raster(extent(range(pts1[,1]), range(pts1[,2])) + res)
     res(r)=res
