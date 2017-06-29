@@ -1,5 +1,5 @@
 modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx = F, GLM = F, RF = F, 
-                   SVM = F, dm = F, mah = F, proj, buffer, geo.filt, br) {
+                   SVM = F, dm = F, mah = F, proj, buffer, geo.filt = F, br) {
   
   if(missing(abio)){stop("Informe as variÃ¡veis abiÃ³ticas")}else(predictors=abio)
   original = getwd()
