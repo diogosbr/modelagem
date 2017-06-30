@@ -159,7 +159,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 3, 8] = e@auc
       aval[i + 3, 9] = max(e@TPR + e@TNR) - 1
       aval[i + 3, 10] = tr
-      aval[i,11] = i
+      aval[i + 3,11] = i
       if(missing(proj)){mx.mod = predict(predictors, mx)
       }else(mx.mod = predict(proj, mx))
       writeRaster(mx.mod, paste0("./modelos/", "Maxent_", i, "_con.tif"), format = "GTiff", 
@@ -208,7 +208,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 6, 8] = e@auc
       aval[i + 6, 9] = max(e@TPR + e@TNR) - 1
       aval[i + 6, 10] = tr
-      aval[i,11] = i
+      aval[i + 6,11] = i
       if(missing(proj)){dm.mod = predict(predictors, dm)
       }else(dm.mod = predict(proj, dm))
       
@@ -256,9 +256,9 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 18, ] = threshold(e)
       aval[i + 18, 7] = "Mahalanobis"
       aval[i + 18, 8] = e@auc
-      aval[i + 17, 9] = max(e@TPR + e@TNR) - 1
+      aval[i + 18, 9] = max(e@TPR + e@TNR) - 1
       aval[i + 18, 10] = tr
-      aval[i,11] = i
+      aval[i + 18,11] = i
       if(missing(proj)){mah.mod = predict(predictors, mah)
       }else(mah.mod = predict(proj, mah))
       writeRaster(mah.mod, paste0("./modelos/", "Mahalanobis_", i, "_con.tif"), format = "GTiff", 
@@ -325,7 +325,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 9, 8] = e@auc
       aval[i + 9, 9] = max(e@TPR + e@TNR) - 1
       aval[i + 9, 10] = tr
-      aval[i,11] = i
+      aval[i + 9,11] = i
       if(missing(proj)){GLM.mod = predict(predictors, GLM)
       }else(GLM.mod = predict(proj, GLM))
       writeRaster(GLM.mod, paste0("./modelos/", "GLM_", i, "_con.tif"), format = "GTiff", 
