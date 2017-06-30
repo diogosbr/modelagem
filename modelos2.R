@@ -483,7 +483,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   values(mm) = values(mm)/mm@data@max
   
   names(aval)[1:6] = names(threshold(e))
-  names(aval)[7:10] = c("Algoritmo", "AUC", "TSS", "TSSth", "Partição")
+  names(aval)[7:11] = c("Algoritmo", "AUC", "TSS", "TSSth", "Partição")
   
   writeRaster(mm, paste0("./final/", "Geral_", "ensemble", ".tif"), format = "GTiff", overwrite = T)
   write.table(na.omit(aval), "AvaliaÃ§Ã£o.csv", sep = ";", dec = ".",row.names = F)
