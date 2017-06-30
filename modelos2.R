@@ -64,8 +64,8 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     names(pts2)=c("lon",'lat')
     coordinates(pts2) <- ~lon + lat
     if(buffer=="mean"){
-      dist.buf <- mean(spDists(x = pts1, longlat = FALSE, segments = TRUE))
-    } else(dist.buf <- max(spDists(x = pts1, longlat = FALSE, segments = TRUE)))
+      dist.buf <- mean(spDists(x = pts2, longlat = FALSE, segments = TRUE))
+    } else(dist.buf <- max(spDists(x = pts2, longlat = FALSE, segments = TRUE)))
     
     buffer <- buffer(pts2, width = dist.buf, dissolve = TRUE)
     buffer <- SpatialPolygonsDataFrame(buffer, data = as.data.frame(buffer@plotOrder), 
