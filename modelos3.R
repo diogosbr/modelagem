@@ -166,7 +166,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     # Maxent #####
     
     for (i in 1:k) {
-      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "Maxent"))
+      cat(c("\n", "Começou a partição", i, "Maxent"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -179,33 +179,53 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 3, 8] = e@auc
       aval[i + 3, 9] = max(e@TPR + e@TNR) - 1
       aval[i + 3, 10] = tr
-      aval[i,11] = i
+      aval[i + 3,11] = i
       if(missing(proj)){mx.mod = predict(predictors, mx)
       }else(mx.mod = predict(proj, mx))
-      writeRaster(mx.mod, paste0("./modelos/", "Maxent_", i, "_con.tif"), format = "GTiff", 
-                  overwrite = T)
-      writeRaster(mx.mod > tr, paste0("./modelos/bin/", "Maxent_", i, "_bin.tif"), format = "GTiff", 
-                  overwrite = T)
-      png(paste0("./png/", "Maxent_", i, "con.png"))
-      plot(mx.mod, main = paste0("Maxent con part_", i))
-      dev.off()
-      png(paste0("./png/", "Maxent_", i, "bin.png"))
-      plot(mx.mod > tr, main = paste0("Maxent bin part_", i))
-      dev.off()
+      if(mod=="before"){values(mx.mod)[values(mx.mod) < tr] = 0 }
+      if(missing(tss)){
+        writeRaster(mx.mod, paste0("./modelos/", "Maxent_", i, "_con.tif"), format = "GTiff", 
+                    overwrite = T)
+        writeRaster(mx.mod > tr, paste0("./modelos/bin/", "Maxent_", i, "_bin.tif"), format = "GTiff", 
+                    overwrite = T)
+        png(paste0("./png/", "Maxent_", i, "con.png"))
+        plot(mx.mod, main = paste0("Maxent con part_", i))
+        dev.off()
+        png(paste0("./png/", "Maxent_", i, "bin.png"))
+        plot(mx.mod > tr, main = paste0("Maxent bin part_", i))
+        dev.off()
+      }
+      if(missing(tss)==FALSE){
+        if(tr>tss){
+          writeRaster(mx.mod, paste0("./modelos/", "Maxent_", i, "_con.tif"), format = "GTiff", 
+                      overwrite = T)
+          writeRaster(mx.mod > tr, paste0("./modelos/bin/", "Maxent_", i, "_bin.tif"), format = "GTiff", 
+                      overwrite = T)
+          png(paste0("./png/", "Maxent_", i, "con.png"))
+          plot(mx.mod, main = paste0("Maxent con part_", i))
+          dev.off()
+          png(paste0("./png/", "Maxent_", i, "bin.png"))
+          plot(mx.mod > tr, main = paste0("Maxent bin part_", i))
+          dev.off()
+        }
+      }
+      
       if (i == k) {
+        if(length(list.files("./modelos", pattern = c("Maxent", ".tif"), full.names = T))!=0){}
         mx.stack = stack(list.files("./modelos", pattern = c("Maxent", ".tif"), full.names = T))
         mx.ens = mean(mx.stack)
+        
+        # padronizando de 0 a 1
+        values(mx.ens) = values(mx.ens)/mx.ens@data@max
+        
+        # recorte com TSSth
+        if(mod=="after"){values(mx.ens)[values(mx.ens) < mean(aval[grep("Maxent", aval[, 7]), 2])] = 0}
         writeRaster(mx.ens, paste0("./ensembles/", "Maxent_", "ensemble", ".tif"), 
                     format = "GTiff", overwrite = T)
         png(paste0("./png/", "Maxent_", "ensemble", "con.png"))
         plot(mx.ens, main = "Maxent ensemble")
         dev.off()
-        # recorte com TSSth
-        values(mx.ens)[values(mx.ens) < mean(aval[grep("Maxent", aval[, 7]), 2])] = 0
-        # padronizando de 0 a 1
-        values(mx.ens) = values(mx.ens)/mx.ens@data@max
-        writeRaster(mx.ens, paste0("./temporario/", "mx_", "ensemble_0-1", ".tif"), 
-                    format = "GTiff", overwrite = T)
+        
         cat(c("\n", "Terminou Maxent"))
       }
     }
@@ -381,7 +401,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     # Random Forest ####
     library(randomForest)
     for (i in 1:k) {
-      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "RandomForest"))
+      cat(c("\n", "Começou a partição", i, "RandomForest"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
@@ -404,32 +424,51 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 12, 11] = i
       if(missing(proj)){RF.mod = predict(predictors, RF)
       }else(RF.mod = predict(proj, RF))
-      
-      writeRaster(RF.mod, paste0("./modelos/", "RF_", i, "_con.tif"), format = "GTiff", 
-                  overwrite = T)
-      writeRaster(RF.mod > tr, paste0("./modelos/bin/", "RF_", i, "_bin.tif"), format = "GTiff", 
-                  overwrite = T)
-      png(paste0("./png/", "RF_", i, "con.png"))
-      plot(RF.mod, main = paste0("RF con part_", i))
-      dev.off()
-      png(paste0("./png/", "RF_", i, "bin.png"))
-      plot(RF.mod > tr, main = paste0("RF bin part_", i))
-      dev.off()
-      if (i == k) {
-        RF.stack = stack(list.files("./modelos", pattern = c("RF", ".tif"), full.names = T))
-        RF.ens = mean(RF.stack)
-        writeRaster(RF.ens, paste0("./ensembles/", "RF_", "ensemble", ".tif"), format = "GTiff", 
+      if(missing(tss)){
+        writeRaster(RF.mod, paste0("./modelos/", "RF_", i, "_con.tif"), format = "GTiff", 
                     overwrite = T)
-        png(paste0("./png/", "RF_", "ensemble", ".png"))
-        plot(RF.ens, main = "Random Forest ensemble")
+        writeRaster(RF.mod > tr, paste0("./modelos/bin/", "RF_", i, "_bin.tif"), format = "GTiff", 
+                    overwrite = T)
+        png(paste0("./png/", "RF_", i, "con.png"))
+        plot(RF.mod, main = paste0("RF con part_", i))
         dev.off()
-        # recorte com TSSth
-        values(RF.ens)[values(RF.ens) < mean(aval[grep("Random Forest", aval[, 7]), 
-                                                  2])] = 0
-        # padronizando de 0 a 1
-        values(RF.ens) = values(RF.ens)/RF.ens@data@max
-        writeRaster(RF.ens, paste0("./temporario/", "RF_", "ensemble_0-1", ".tif"), 
-                    format = "GTiff", overwrite = T)
+        png(paste0("./png/", "RF_", i, "bin.png"))
+        plot(RF.mod > tr, main = paste0("RF bin part_", i))
+        dev.off()
+      }
+      if(missing(tss)==FALSE){
+        if(tr>tss){
+          writeRaster(RF.mod, paste0("./modelos/", "RF_", i, "_con.tif"), format = "GTiff", 
+                      overwrite = T)
+          writeRaster(RF.mod > tr, paste0("./modelos/bin/", "RF_", i, "_bin.tif"), format = "GTiff", 
+                      overwrite = T)
+          png(paste0("./png/", "RF_", i, "con.png"))
+          plot(RF.mod, main = paste0("RF con part_", i))
+          dev.off()
+          png(paste0("./png/", "RF_", i, "bin.png"))
+          plot(RF.mod > tr, main = paste0("RF bin part_", i))
+          dev.off()
+        }
+      }
+      
+      if (i == k) {
+        if(length(list.files("./modelos", pattern = c("RF", ".tif"), full.names = T))!=0){
+          RF.stack = stack(list.files("./modelos", pattern = c("RF", ".tif"), full.names = T))
+          RF.ens = mean(RF.stack)
+          
+          # padronizando de 0 a 1
+          values(RF.ens) = values(RF.ens)/RF.ens@data@max
+          
+          # recorte com TSSth
+          if(mod=="after"){values(RF.ens)[values(RF.ens) < mean(aval[grep("Random Forest", aval[, 7]), 2])] = 0}
+          
+          writeRaster(RF.ens, paste0("./ensembles/", "RF_", "ensemble", ".tif"), format = "GTiff", 
+                      overwrite = T)
+          png(paste0("./png/", "RF_", "ensemble", ".png"))
+          plot(RF.ens, main = "Random Forest ensemble")
+          dev.off()
+          rm(RF.ens)
+        }
         cat(c("\n", "Terminou Random Forest"))
       }
     }
