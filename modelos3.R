@@ -1,5 +1,5 @@
 modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx = F, GLM = F, RF = F, 
-                   SVM = F, dm = F, mah = F, proj, buffer, geo.filt, br, mod = 'before', tss) {
+                   SVM = F, dm = F, mah = F, proj, buffer, geo.filt = T, br, mod = 'before', tss) {
   
   if(missing(abio)){stop("Informe as variÃ¡veis abióticas")}else(predictors=abio)
   original = getwd()
@@ -44,11 +44,12 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   names(pts1) = c("long", "lat")
   
   #Filtros geográficos####
-  if(geo.filt){
+  if(geo.filt==T){
     res=0.1666667#10min - 20km
     r=raster(extent(range(pts1[,1]), range(pts1[,2])) + res)
     res(r)=res
     pts1=gridSample(pts1,r, n=1)
+    cat(paste0('Serão utilizados ', dim(pts1)[1], ' após o filtro geográfico de 20Km'))
   }
   
   #--------------#
