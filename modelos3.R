@@ -211,20 +211,21 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       }
       
       if (i == k) {
-        if(length(list.files("./modelos", pattern = c("Maxent", ".tif"), full.names = T))!=0){}
-        mx.stack = stack(list.files("./modelos", pattern = c("Maxent", ".tif"), full.names = T))
-        mx.ens = mean(mx.stack)
-        
-        # padronizando de 0 a 1
-        values(mx.ens) = values(mx.ens)/mx.ens@data@max
-        
-        # recorte com TSSth
-        if(mod=="after"){values(mx.ens)[values(mx.ens) < mean(aval[grep("Maxent", aval[, 7]), 2])] = 0}
-        writeRaster(mx.ens, paste0("./ensembles/", "Maxent_", "ensemble", ".tif"), 
-                    format = "GTiff", overwrite = T)
-        png(paste0("./png/", "Maxent_", "ensemble", "con.png"))
-        plot(mx.ens, main = "Maxent ensemble")
-        dev.off()
+        if(length(list.files("./modelos", pattern = c("Maxent", ".tif"), full.names = T))!=0){
+          mx.stack = stack(list.files("./modelos", pattern = c("Maxent", ".tif"), full.names = T))
+          mx.ens = mean(mx.stack)
+          
+          # padronizando de 0 a 1
+          values(mx.ens) = values(mx.ens)/mx.ens@data@max
+          
+          # recorte com TSSth
+          if(mod=="after"){values(mx.ens)[values(mx.ens) < mean(aval[grep("Maxent", aval[, 7]), 2])] = 0}
+          writeRaster(mx.ens, paste0("./ensembles/", "Maxent_", "ensemble", ".tif"), 
+                      format = "GTiff", overwrite = T)
+          png(paste0("./png/", "Maxent_", "ensemble", "con.png"))
+          plot(mx.ens, main = "Maxent ensemble")
+          dev.off()
+        }
         
         cat(c("\n", "Terminou Maxent"))
       }
