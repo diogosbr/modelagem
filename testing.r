@@ -1,4 +1,4 @@
-source("https://raw.githubusercontent.com/diogosbr/modelagem/master/cut_raster.R")  #carrega função para cortar raster
+source("https://raw.githubusercontent.com/diogosbr/modelagem/master/cut_raster.r")  #carrega funÃ§Ã£o para cortar raster
 
 wc = raster::getData("worldclim", var = "bio", res = 10)
 unlink("./wc10/bio_10m_bil.zip")
@@ -7,14 +7,13 @@ unzip("bra.zip", exdir = "./brasil")
 unlink("bra.zip")
 cut.raster(raster.dir = "wc10", shape.dir = "brasil", extension = ".bil")
 
-
-source("https://raw.githubusercontent.com/diogosbr/modelagem/master/cor_data.R")  #carrega função para ver correlação entre rasters
+source("https://raw.githubusercontent.com/diogosbr/modelagem/master/cor_data.r")  #carrega funÃ§Ã£o para ver correlaÃ§Ã£o entre rasters
 
 wc = raster::getData("worldclim", var = "bio", res = 10)
 cor.data(predictors = wc)
 
 
-source("https://raw.githubusercontent.com/diogosbr/modelagem/master/clean.R")  #carrega função para selecionar apenas pontos espacialmente únicos e sem NA
+source("https://raw.githubusercontent.com/diogosbr/modelagem/master/clean.r")  #carrega funÃ§Ã£o para selecionar apenas pontos espacialmente Ãºnicos e sem NA
 
 library(dismo)
 data(acaule)
@@ -23,10 +22,10 @@ wc = raster::getData("worldclim", var = "bio", res = 10)
 clean(coord = pontos, predictors = wc)
 
 
-source("https://raw.githubusercontent.com/diogosbr/modelagem/master/modelos.R")  #carrega função para gerar os modelos
-
 library(dismo)
 data(acaule)
+
+source("https://raw.githubusercontent.com/diogosbr/modelagem/master/modelos.r")  #carrega funÃ§Ã£o para gerar os modelos
 
 # Roda somente o Bioclim
 pontos = as.data.frame(na.omit(cbind(acaule$lon, acaule$lat)))
@@ -34,7 +33,7 @@ wc = raster::getData("worldclim", var = "bio", res = 10)
 predictors = wc
 modelos(coord = pontos, diretorio = "solanum")
 
-source("https://raw.githubusercontent.com/diogosbr/modelagem/master/toKML.R")  #carrega função para gerar os modelos
+source("https://raw.githubusercontent.com/diogosbr/modelagem/master/toKML.R")  #carrega funï¿½ï¿½o para gerar os modelos
 
 library(dismo)
 
@@ -42,4 +41,3 @@ fnames <- list.files(path=paste(system.file(package="dismo"), '/ex', sep=''),
                      pattern='grd', full.names=TRUE )
 predictors <- stack(fnames)
 toKML(predictors[[4]],open=T)
-
