@@ -29,6 +29,7 @@ cut.raster = function(raster.dir, shape.dir, extension = ".asc", plot = TRUE, tr
         predictors <- raster::stack(wrdclim)  #predictors
     } else (predictors = raster::stack(list.files(raster.dir, pattern = extension, full.names = TRUE)))
     
+    crs(shape) = crs(predictors)
     
     # loop para cortar todos os rasters
     

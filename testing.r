@@ -7,7 +7,6 @@ unzip("bra.zip", exdir = "./brasil")
 unlink("bra.zip")
 cut.raster(raster.dir = "wc10", shape.dir = "brasil", extension = ".bil")
 
-
 source("https://raw.githubusercontent.com/diogosbr/modelagem/master/cor_data.r")  #carrega função para ver correlação entre rasters
 
 wc = raster::getData("worldclim", var = "bio", res = 10)
@@ -23,6 +22,9 @@ wc = raster::getData("worldclim", var = "bio", res = 10)
 clean(coord = pontos, predictors = wc)
 
 
+library(dismo)
+data(acaule)
+
 source("https://raw.githubusercontent.com/diogosbr/modelagem/master/modelos.r")  #carrega função para gerar os modelos
 
 # Roda somente o Bioclim
@@ -31,4 +33,11 @@ wc = raster::getData("worldclim", var = "bio", res = 10)
 predictors = wc
 modelos(coord = pontos, diretorio = "solanum")
 
+source("https://raw.githubusercontent.com/diogosbr/modelagem/master/toKML.R")  #carrega fun��o para gerar os modelos
 
+library(dismo)
+
+fnames <- list.files(path=paste(system.file(package="dismo"), '/ex', sep=''), 
+                     pattern='grd', full.names=TRUE )
+predictors <- stack(fnames)
+toKML(predictors[[4]],open=T)
