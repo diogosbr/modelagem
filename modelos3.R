@@ -42,6 +42,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   source("https://raw.githubusercontent.com/diogosbr/modelagem/master/clean.R")
   pts1 = clean(pts, predictors = predictors)
   names(pts1) = c("long", "lat")
+  aa=c(dim(pts)[1], dim(pts1), dim(pts)[1]-dim(pts1)[1])
   
   #Filtros geográficos####
   if(geo.filt==T){
@@ -49,8 +50,10 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     r=raster(extent(range(pts1[,1]), range(pts1[,2])) + res)
     res(r)=res
     pts1=gridSample(pts1,r, n=1)
-    cat(paste0('Serão utilizados ', dim(pts1)[1], ' após o filtro geográfico de 20Km'))
+    cat(paste0(dim(pts1)[1], ' após o filtro geográfico de 20Km'))
+    aa=c(aa, dim(pts1)[1])
   }
+  write.table(as.data.frame(aa), "Nocc.csv", row.names = F, sep = ";")
   
   #--------------#
   # Modelando #####
