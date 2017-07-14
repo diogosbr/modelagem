@@ -1,8 +1,8 @@
-cor.data = function(predictors, plot = TRUE) {
+cor.data = function(predictors, plot = TRUE, rep = 1000) {
     require(raster)
     require(dismo)
     if(class(predictors)=="RasterStack"|class(predictors)=="RasterLayer"){
-      backg <- randomPoints(predictors, n = 1000)
+      backg <- randomPoints(predictors, n = rep)
       colnames(backg) = c("long", "lat")
       backvalues = extract(predictors, backg)
     }else(backvalues=predictors)
