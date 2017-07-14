@@ -71,7 +71,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       dist.buf <- mean(spDists(x = pts1, longlat = FALSE, segments = TRUE))
     } else(dist.buf <- max(spDists(x = pts1, longlat = FALSE, segments = TRUE)))
     
-    buffer <- buffer(pts2, width = dist.buf, dissolve = TRUE)
+    buffer <- raster::buffer(pts2, width = dist.buf, dissolve = TRUE)
     buffer <- SpatialPolygonsDataFrame(buffer, data = as.data.frame(buffer@plotOrder), 
                                        match.ID = FALSE)
     crs(buffer) <- crs(predictors)
