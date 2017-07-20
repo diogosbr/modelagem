@@ -238,9 +238,8 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   
   if (dm == T) {
     # Domain #####
-    
     for (i in 1:k) {
-      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "Domain"))
+      cat(c("\n", "Começou a partição", i, "Domain"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -248,39 +247,59 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       dm <- domain(predictors, pres_train)
       e = evaluate(pres_test, backg_test, dm, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
-      aval[i + 6, ] = threshold(e)
-      aval[i + 6, 7] = "Domain"
-      aval[i + 6, 8] = e@auc
-      aval[i + 6, 9] = max(e@TPR + e@TNR) - 1
-      aval[i + 6, 10] = tr
+      aval[i, ] = threshold(e)
+      aval[i, 7] = "Domain"
+      aval[i, 8] = e@auc
+      aval[i, 9] = max(e@TPR + e@TNR) - 1
+      aval[i, 10] = tr
       aval[i,11] = i
       if(missing(proj)){dm.mod = predict(predictors, dm)
       }else(dm.mod = predict(proj, dm))
-      
-      writeRaster(dm.mod, paste0("./modelos/", "Domain_", i, "_con.tif"), format = "GTiff", 
-                  overwrite = T)
-      writeRaster(dm.mod > tr, paste0("./modelos/bin/", "Domain_", i, "_bin.tif"), format = "GTiff", 
-                  overwrite = T)
-      png(paste0("./png/", "Domain_", i, "con.png"))
-      plot(dm.mod, main = paste0("Domain con part_", i))
-      dev.off()
-      png(paste0("./png/", "Domain_", i, "bin.png"))
-      plot(dm.mod > tr, main = paste0("Domain bin part_", i))
-      dev.off()
-      if (i == k) {
-        dm.stack = stack(list.files("./modelos", pattern = c("Domain", ".tif"), full.names = T))
-        dm.ens = mean(dm.stack)
-        writeRaster(dm.ens, paste0("./ensembles/", "Domain_", "ensemble", ".tif"), 
-                    format = "GTiff", overwrite = T)
-        png(paste0("./png/", "domain_", "ensemble", "con.png"))
-        plot(dm.ens, main = "Domain ensemble")
+      if(mod=="before"){values(dm.mod)[values(dm.mod) < tr] = 0}
+      if(missing(tss)){
+        writeRaster(dm.mod, paste0("./modelos/", "dm_", i, "_con.tif"), format = "GTiff", 
+                    overwrite = T)
+        writeRaster(dm.mod > tr, paste0("./modelos/bin/", "dm_", i, "_bin.tif"), format = "GTiff", 
+                    overwrite = T)
+        png(paste0("./png/", "dm_", i, "con.png"))
+        plot(dm.mod, main = paste0("Domain con part_", i))
         dev.off()
-        # recorte com TSSth
-        values(dm.ens)[values(dm.ens) < mean(aval[grep("Domain", aval[, 7]), 2])] = 0
-        # padronizando de 0 a 1
-        values(dm.ens) = values(dm.ens)/dm.ens@data@max
-        writeRaster(dm.ens, paste0("./temporario/", "dm_", "ensemble_0-1", ".tif"), 
-                    format = "GTiff", overwrite = T)
+        png(paste0("./png/", "dm_", i, "bin.png"))
+        plot(dm.mod > tr, main = paste0("Domain bin part_", i))
+        dev.off()
+      }
+      if(missing(tss)==FALSE){
+        if(tr>tss){
+          writeRaster(dm.mod, paste0("./modelos/", "dm_", i, "_con.tif"), format = "GTiff", 
+                      overwrite = T)
+          writeRaster(dm.mod > tr, paste0("./modelos/bin/", "dm_", i, "_bin.tif"), format = "GTiff", 
+                      overwrite = T)
+          png(paste0("./png/", "dm_", i, "con.png"))
+          plot(dm.mod, main = paste0("Domain con part_", i))
+          dev.off()
+          png(paste0("./png/", "dm_", i, "bin.png"))
+          plot(dm.mod > tr, main = paste0("Domain bin part_", i))
+          dev.off()
+        }
+      }
+      #Ensemble do algoritmo
+      if (i == k) {
+        if(length(list.files("./modelos", pattern = c("dm", ".tif")))!=0){
+          dm.stack = stack(list.files("./modelos", pattern = c("dm", ".tif"), full.names = T))
+          dm.ens = mean(dm.stack)
+          
+          # padronizando de 0 a 1
+          values(dm.ens) = values(dm.ens)/dm.ens@data@max
+          
+          # recorte com TSSth
+          if(mod=="after"){values(dm.ens)[values(dm.ens) < mean(aval[grep("Domain", aval[, 7]), 2])] = 0}
+          writeRaster(dm.ens, paste0("./ensembles/", "dm_", "ensemble ", ".tif"), format = "GTiff", 
+                      overwrite = T)
+          png(paste0("./png/", "dm_", "ensemble ", "con.png"))
+          plot(dm.ens, main = "Domain ensemble")
+          dev.off()
+          rm(dm.ens)
+        }
         cat(c("\n", "Terminou Domain"))
       }
     }
@@ -290,7 +309,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     # Mahalanobis #####
     
     for (i in 1:k) {
-      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "Mahalanobis"))
+      cat(c("\n", "Começou a partição", i, "Mahalanobis"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -298,40 +317,59 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       mah <- mahal(predictors, pres_train)
       e = evaluate(pres_test, backg_test, mah, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
-      aval[i + 18, ] = threshold(e)
-      aval[i + 18, 7] = "Mahalanobis"
-      aval[i + 18, 8] = e@auc
-      aval[i + 17, 9] = max(e@TPR + e@TNR) - 1
-      aval[i + 18, 10] = tr
+      aval[i, ] = threshold(e)
+      aval[i, 7] = "Mahalanobis"
+      aval[i, 8] = e@auc
+      aval[i, 9] = max(e@TPR + e@TNR) - 1
+      aval[i, 10] = tr
       aval[i,11] = i
       if(missing(proj)){mah.mod = predict(predictors, mah)
       }else(mah.mod = predict(proj, mah))
-      writeRaster(mah.mod, paste0("./modelos/", "Mahalanobis_", i, "_con.tif"), format = "GTiff", 
-                  overwrite = T)
-      writeRaster(mah.mod > tr, paste0("./modelos/bin/", "Mahalanobis_", i, "_bin.tif"), 
-                  format = "GTiff", overwrite = T)
-      png(paste0("./png/", "Mahalanobis_", i, "con.png"))
-      plot(mah.mod, main = paste0("Mahalanobis con part_", i))
-      dev.off()
-      png(paste0("./png/", "Mahalanobis_", i, "bin.png"))
-      plot(mah.mod > tr, main = paste0("Mahalanobis bin part_", i))
-      dev.off()
-      if (i == k) {
-        mah.stack = stack(list.files("./modelos", pattern = c("mahalanobis", ".tif"), 
-                                     full.names = T))
-        mah.ens = mean(mah.stack)
-        writeRaster(mah.ens, paste0("./ensembles/", "mahalanobis_", "ensemble", ".tif"), 
-                    format = "GTiff", overwrite = T)
-        png(paste0("./png/", "mahalanobis_", "ensemble", "con.png"))
-        plot(mah.ens, main = "Mahalanobis ensemble")
+      if(mod=="before"){values(mah.mod)[values(mah.mod) < tr] = 0}
+      if(missing(tss)){
+        writeRaster(mah.mod, paste0("./modelos/", "mah_", i, "_con.tif"), format = "GTiff", 
+                    overwrite = T)
+        writeRaster(mah.mod > tr, paste0("./modelos/bin/", "mah_", i, "_bin.tif"), format = "GTiff", 
+                    overwrite = T)
+        png(paste0("./png/", "mah_", i, "con.png"))
+        plot(mah.mod, main = paste0("Mahalanobis con part_", i))
         dev.off()
-        # recorte com TSSth
-        values(mah.ens)[values(mah.ens) < mean(aval[grep("Mahalanobis", aval[, 7]), 
-                                                    2])] = 0
-        # padronizando de 0 a 1
-        values(mah.ens) = values(mah.ens)/mah.ens@data@max
-        writeRaster(mah.ens, paste0("./temporario/", "mah_", "ensemble_0-1", ".tif"), 
-                    format = "GTiff", overwrite = T)
+        png(paste0("./png/", "mah_", i, "bin.png"))
+        plot(mah.mod > tr, main = paste0("Mahalanobis bin part_", i))
+        dev.off()
+      }
+      if(missing(tss)==FALSE){
+        if(tr>tss){
+          writeRaster(mah.mod, paste0("./modelos/", "mah_", i, "_con.tif"), format = "GTiff", 
+                      overwrite = T)
+          writeRaster(mah.mod > tr, paste0("./modelos/bin/", "mah_", i, "_bin.tif"), format = "GTiff", 
+                      overwrite = T)
+          png(paste0("./png/", "mah_", i, "con.png"))
+          plot(mah.mod, main = paste0("Mahalanobis con part_", i))
+          dev.off()
+          png(paste0("./png/", "mah_", i, "bin.png"))
+          plot(mah.mod > tr, main = paste0("Mahalanobis bin part_", i))
+          dev.off()
+        }
+      }
+      #Ensemble do algoritmo
+      if (i == k) {
+        if(length(list.files("./modelos", pattern = c("mah", ".tif")))!=0){
+          mah.stack = stack(list.files("./modelos", pattern = c("mah", ".tif"), full.names = T))
+          mah.ens = mean(mah.stack)
+          
+          # padronizando de 0 a 1
+          values(mah.ens) = values(mah.ens)/mah.ens@data@max
+          
+          # recorte com TSSth
+          if(mod=="after"){values(mah.ens)[values(mah.ens) < mean(aval[grep("Mahalanobis", aval[, 7]), 2])] = 0}
+          writeRaster(mah.ens, paste0("./ensembles/", "mah_", "ensemble ", ".tif"), format = "GTiff", 
+                      overwrite = T)
+          png(paste0("./png/", "mah_", "ensemble ", "con.png"))
+          plot(mah.ens, main = "Mahalanobis ensemble")
+          dev.off()
+          rm(mah.ens)
+        }
         cat(c("\n", "Terminou Mahalanobis"))
       }
     }
@@ -340,8 +378,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   if (GLM == T) {
     # GLM ####
     for (i in 1:k) {
-      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "GLM"))
-      
+      cat(c("\n", "Começou a partição", i, "GLM"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -352,51 +389,75 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       envtrain <- extract(predictors, train)
       envtrain <- data.frame(na.omit(cbind(pa = pb_train, envtrain)))
       
-      #envteste_p <- extract(predictors, pres_train)
-      #envteste_p <- data.frame(envteste_p)
-      #envteste_a <- extract(predictors, backg_train)
-      #envteste_a <- data.frame(envteste_a)
+      envtest_p=envtrain[envtrain[,1]==1,]
+      envtest_a=envtrain[envtrain[,1]==0,]
       
-      #null.model <- glm(pa ~ 1, data = envtrain, family = "binomial")
-      #full.model <- glm(pa ~ ., data = envtrain, family = "binomial")
-      #GLM <- step(object = null.model, scope = formula(full.model), direction = "both", 
-      #            trace = F)
+      #adaptado model-R
+      null.model <- glm(pa ~ 1, data = envtrain, family = "binomial")
+      full.model <- glm(pa ~ ., data = envtrain, family = "binomial")
+      GLM <- step(object = null.model, scope = formula(full.model), direction = "both", 
+                  trace = F)
+      e <- evaluate(envtest_p, envtest_p, model = GLM, type = "response") 
+      #e <- evaluate(pres_test, backg_test, predictors, type = "response") 
       
-      GLM <- glm(pa ~ ., family = gaussian(link = "identity"), data = envtrain)
-      e = evaluate(pres_test, backg_test, GLM, predictors)
+      #Exemplo do dismo
+      #GLM <- glm(pa ~ ., family = gaussian(link = "identity"), data = envtrain)
+      #e = evaluate(pres_test, backg_test, GLM, predictors)
+      
       tr = e@t[which.max(e@TPR + e@TNR)]
-      aval[i + 9, ] = threshold(e)
-      aval[i + 9, 7] = "GLM"
-      aval[i + 9, 8] = e@auc
-      aval[i + 9, 9] = max(e@TPR + e@TNR) - 1
-      aval[i + 9, 10] = tr
+      aval[i, ] = threshold(e)
+      aval[i, 7] = "GLM"
+      aval[i, 8] = e@auc
+      aval[i, 9] = max(e@TPR + e@TNR) - 1
+      aval[i, 10] = tr
       aval[i,11] = i
       if(missing(proj)){GLM.mod = predict(predictors, GLM)
       }else(GLM.mod = predict(proj, GLM))
-      writeRaster(GLM.mod, paste0("./modelos/", "GLM_", i, "_con.tif"), format = "GTiff", 
-                  overwrite = T)
-      writeRaster(GLM.mod > tr, paste0("./modelos/bin/", "GLM_", i, "_bin.tif"), format = "GTiff", 
-                  overwrite = T)
-      png(paste0("./png/", "GLM_", i, "con.png"))
-      plot(GLM.mod, main = paste0("GLM con part_", i))
-      dev.off()
-      png(paste0("./png/", "GLM_", i, "bin.png"))
-      plot(GLM.mod > tr, main = paste0("GLM bin part_", i))
-      dev.off()
-      if (i == k) {
-        GLM.stack = stack(list.files("./modelos", pattern = c("GLM", ".tif"), full.names = T))
-        GLM.ens = mean(GLM.stack)
-        writeRaster(GLM.ens, paste0("./ensembles/", "GLM_", "ensemble", "bin.tif"), 
-                    format = "GTiff", overwrite = T)
-        png(paste0("./png/", "GLM_", "ensemble", ".png"))
-        plot(GLM.ens, main = "GLM ensemble")
+      if(mod=="before"){values(GLM.mod)[values(GLM.mod) < tr] = 0}
+      if(missing(tss)){
+        writeRaster(GLM.mod, paste0("./modelos/", "GLM_", i, "_con.tif"), format = "GTiff", 
+                    overwrite = T)
+        writeRaster(GLM.mod > tr, paste0("./modelos/bin/", "GLM_", i, "_bin.tif"), format = "GTiff", 
+                    overwrite = T)
+        png(paste0("./png/", "GLM_", i, "con.png"))
+        plot(GLM.mod, main = paste0("GLM con part_", i))
         dev.off()
-        # recorte com TSSth
-        values(GLM.ens)[values(GLM.ens) < mean(aval[grep("GLM", aval[, 7]), 2])] = 0
-        # padronizando de 0 a 1
-        values(GLM.ens) = values(GLM.ens)/GLM.ens@data@max
-        writeRaster(GLM.ens, paste0("./temporario/", "GLM_", "ensemble_0-1", ".tif"), 
-                    format = "GTiff", overwrite = T)
+        png(paste0("./png/", "GLM_", i, "bin.png"))
+        plot(GLM.mod > tr, main = paste0("GLM bin part_", i))
+        dev.off()
+      }
+      if(missing(tss)==FALSE){
+        if(tr>tss){
+          writeRaster(GLM.mod, paste0("./modelos/", "GLM_", i, "_con.tif"), format = "GTiff", 
+                      overwrite = T)
+          writeRaster(GLM.mod > tr, paste0("./modelos/bin/", "GLM_", i, "_bin.tif"), format = "GTiff", 
+                      overwrite = T)
+          png(paste0("./png/", "GLM_", i, "con.png"))
+          plot(GLM.mod, main = paste0("GLM con part_", i))
+          dev.off()
+          png(paste0("./png/", "GLM_", i, "bin.png"))
+          plot(GLM.mod > tr, main = paste0("GLM bin part_", i))
+          dev.off()
+        }
+      }
+      #Ensemble do algoritmo
+      if (i == k) {
+        if(length(list.files("./modelos", pattern = c("GLM", ".tif")))!=0){
+          GLM.stack = stack(list.files("./modelos", pattern = c("GLM", ".tif"), full.names = T))
+          GLM.ens = mean(GLM.stack)
+          
+          # padronizando de 0 a 1
+          values(GLM.ens) = values(GLM.ens)/GLM.ens@data@max
+          
+          # recorte com TSSth
+          if(mod=="after"){values(GLM.ens)[values(GLM.ens) < mean(aval[grep("GLM", aval[, 7]), 2])] = 0}
+          writeRaster(GLM.ens, paste0("./ensembles/", "GLM_", "ensemble ", ".tif"), format = "GTiff", 
+                      overwrite = T)
+          png(paste0("./png/", "GLM_", "ensemble ", "con.png"))
+          plot(GLM.ens, main = "GLM ensemble")
+          dev.off()
+          rm(GLM.ens)
+        }
         cat(c("\n", "Terminou GLM"))
       }
     }
@@ -495,7 +556,9 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       envtrain <- extract(predictors, train)
       envtrain <- data.frame(na.omit(cbind(pa = pb_train, envtrain)))
       
-      SVM <- ksvm(pa ~ ., data = envtrain)
+      #SVM <- ksvm(pa ~ ., data = envtrain)
+      SVM <- ksvm(pa ~ ., data = envtrain, cross = k)
+      
       e = evaluate(pres_test, backg_test, SVM, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
       aval[i + 15, ] = threshold(e)
@@ -506,30 +569,54 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       aval[i + 15, 11] = i
       if(missing(proj)){SVM.mod = predict(predictors, SVM)
       }else(SVM.mod = predict(proj, SVM))
-      writeRaster(SVM.mod, paste0("./modelos/", "SVM_", i, "_con.tif"), format = "GTiff", 
-                  overwrite = T)
-      writeRaster(SVM.mod > tr, paste0("./modelos/bin/", "SVM_", i, "_bin.tif"), format = "GTiff", 
-                  overwrite = T)
-      png(paste0("./png/", "SVM_", i, "con.png"))
-      plot(SVM.mod, main = paste0("SVM con part_", i))
-      dev.off()
-      png(paste0("./png/", "SVM_", i, "bin.png"))
-      plot(SVM.mod > tr, main = paste0("SVM bin part_", i))
-      dev.off()
-      if (i == k) {
-        SVM.stack = stack(list.files("./modelos", pattern = c("SVM", ".tif"), full.names = T))
-        SVM.ens = mean(SVM.stack)
-        writeRaster(SVM.ens, paste0("./ensembles/", "SVM_", "ensemble", ".tif"), format = "GTiff", 
+      
+      if(mod=="before"){values(SVM.mod)[values(SVM.mod) < tr] = 0}
+      if(missing(tss)){
+        writeRaster(SVM.mod, paste0("./modelos/", "SVM_", i, "_con.tif"), format = "GTiff", 
                     overwrite = T)
-        png(paste0("./png/", "SVM_", "ensemble", ".png"))
-        plot(SVM.ens, main = "SVM ensemble")
+        writeRaster(SVM.mod > tr, paste0("./modelos/bin/", "SVM_", i, "_bin.tif"), format = "GTiff", 
+                    overwrite = T)
+        png(paste0("./png/", "SVM_", i, "con.png"))
+        plot(SVM.mod, main = paste0("SVM con part_", i))
         dev.off()
-        # recorte com TSSth
-        values(SVM.ens)[values(SVM.ens) < mean(aval[grep("SVM", aval[, 7]), 2])] = 0
-        # padronizando de 0 a 1
-        values(SVM.ens) = values(SVM.ens)/SVM.ens@data@max
-        writeRaster(SVM.ens, paste0("./temporario/", "SVM_", "ensemble_0-1", ".tif"), 
-                    format = "GTiff", overwrite = T)
+        png(paste0("./png/", "SVM_", i, "bin.png"))
+        plot(SVM.mod > tr, main = paste0("SVM bin part_", i))
+        dev.off()
+      }
+      
+      if(missing(tss)==FALSE){
+        if(tr>tss){
+          writeRaster(SVM.mod, paste0("./modelos/", "SVM_", i, "_con.tif"), format = "GTiff", 
+                      overwrite = T)
+          writeRaster(SVM.mod > tr, paste0("./modelos/bin/", "SVM_", i, "_bin.tif"), format = "GTiff", 
+                      overwrite = T)
+          png(paste0("./png/", "bc_", i, "con.png"))
+          plot(SVM.mod, main = paste0("SVM con part_", i))
+          dev.off()
+          png(paste0("./png/", "bc_", i, "bin.png"))
+          plot(SVM.mod > tr, main = paste0("SVM bin part_", i))
+          dev.off()
+        }
+      }
+      
+      #Ensemble do algoritmo
+      if (i == k) {
+        if(length(list.files("./modelos", pattern = c("SVM", ".tif")))!=0){
+          SVM.stack = stack(list.files("./modelos", pattern = c("SVM", ".tif"), full.names = T))
+          SVM.ens = mean(SVM.stack)
+          
+          # padronizando de 0 a 1
+          values(SVM.ens) = values(SVM.ens)/SVM.ens@data@max
+          
+          # recorte com TSSth
+          if(mod=="after"){values(bc.ens)[values(SVM.ens) < mean(aval[grep("SVM", aval[, 7]), 2])] = 0}
+          writeRaster(SVM.ens, paste0("./ensembles/", "SVM_", "ensemble ", ".tif"), format = "GTiff", 
+                      overwrite = T)
+          png(paste0("./png/", "SVM_", "ensemble ", "con.png"))
+          plot(SVM.ens, main = "SVM ensemble")
+          dev.off()
+          rm(SVM.ens)
+        }
         cat(c("\n", "Terminou SVM"))
       }
     }
