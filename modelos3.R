@@ -247,12 +247,12 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       dm <- domain(predictors, pres_train)
       e = evaluate(pres_test, backg_test, dm, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
-      aval[i, ] = threshold(e)
-      aval[i, 7] = "Domain"
-      aval[i, 8] = e@auc
-      aval[i, 9] = max(e@TPR + e@TNR) - 1
-      aval[i, 10] = tr
-      aval[i,11] = i
+      aval[i+6, ] = threshold(e)
+      aval[i+6, 7] = "Domain"
+      aval[i+6, 8] = e@auc
+      aval[i+6, 9] = max(e@TPR + e@TNR) - 1
+      aval[i+6, 10] = tr
+      aval[i+6,11] = i
       if(missing(proj)){dm.mod = predict(predictors, dm)
       }else(dm.mod = predict(proj, dm))
       if(mod=="before"){values(dm.mod)[values(dm.mod) < tr] = 0}
@@ -317,12 +317,12 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       mah <- mahal(predictors, pres_train)
       e = evaluate(pres_test, backg_test, mah, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
-      aval[i, ] = threshold(e)
-      aval[i, 7] = "Mahalanobis"
-      aval[i, 8] = e@auc
-      aval[i, 9] = max(e@TPR + e@TNR) - 1
-      aval[i, 10] = tr
-      aval[i,11] = i
+      aval[i+18, ] = threshold(e)
+      aval[i+18, 7] = "Mahalanobis"
+      aval[i+18, 8] = e@auc
+      aval[i+18, 9] = max(e@TPR + e@TNR) - 1
+      aval[i+18, 10] = tr
+      aval[i+18,11] = i
       if(missing(proj)){mah.mod = predict(predictors, mah)
       }else(mah.mod = predict(proj, mah))
       if(mod=="before"){values(mah.mod)[values(mah.mod) < tr] = 0}
@@ -405,12 +405,12 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       #e = evaluate(pres_test, backg_test, GLM, predictors)
       
       tr = e@t[which.max(e@TPR + e@TNR)]
-      aval[i, ] = threshold(e)
-      aval[i, 7] = "GLM"
-      aval[i, 8] = e@auc
-      aval[i, 9] = max(e@TPR + e@TNR) - 1
-      aval[i, 10] = tr
-      aval[i,11] = i
+      aval[i+9, ] = threshold(e)
+      aval[i+9, 7] = "GLM"
+      aval[i+9, 8] = e@auc
+      aval[i+9, 9] = max(e@TPR + e@TNR) - 1
+      aval[i+9, 10] = tr
+      aval[i+9,11] = i
       if(missing(proj)){GLM.mod = predict(predictors, GLM)
       }else(GLM.mod = predict(proj, GLM))
       if(mod=="before"){values(GLM.mod)[values(GLM.mod) < tr] = 0}
@@ -544,7 +544,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     # SVM ####
     library(kernlab)
     for (i in 1:k) {
-      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "SVM"))
+      cat(c("\n", "Começou a partição", i, "SVM"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
