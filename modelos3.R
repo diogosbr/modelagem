@@ -108,6 +108,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       bc <- bioclim(predictors, pres_train)
       e = evaluate(pres_test, backg_test, bc, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
+      TSS.calc=max(e@TPR + e@TNR) - 1
       aval[i, ] = threshold(e)
       aval[i, 7] = "Bioclim"
       aval[i, 8] = e@auc
@@ -130,7 +131,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
         dev.off()
       }
       if(missing(tss)==FALSE){
-        if(tr>tss){
+        if(TSS.calc>tss){
           writeRaster(bc.mod, paste0("./modelos/", "bc_", i, "_con.tif"), format = "GTiff", 
                       overwrite = T)
           writeRaster(bc.mod > tr, paste0("./modelos/bin/", "bc_", i, "_bin.tif"), format = "GTiff", 
@@ -178,6 +179,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       mx <- maxent(predictors, pres_train)
       e = evaluate(pres_test, backg_test, mx, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
+      TSS.calc=max(e@TPR + e@TNR) - 1
       aval[i + 3, ] = threshold(e)
       aval[i + 3, 7] = "Maxent"
       aval[i + 3, 8] = e@auc
@@ -200,7 +202,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
         dev.off()
       }
       if(missing(tss)==FALSE){
-        if(tr>tss){
+        if(TSS.calc>tss){
           writeRaster(mx.mod, paste0("./modelos/", "Maxent_", i, "_con.tif"), format = "GTiff", 
                       overwrite = T)
           writeRaster(mx.mod > tr, paste0("./modelos/bin/", "Maxent_", i, "_bin.tif"), format = "GTiff", 
@@ -247,6 +249,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       dm <- domain(predictors, pres_train)
       e = evaluate(pres_test, backg_test, dm, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
+      TSS.calc=max(e@TPR + e@TNR) - 1
       aval[i+6, ] = threshold(e)
       aval[i+6, 7] = "Domain"
       aval[i+6, 8] = e@auc
@@ -269,7 +272,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
         dev.off()
       }
       if(missing(tss)==FALSE){
-        if(tr>tss){
+        if(TSS.calc>tss){
           writeRaster(dm.mod, paste0("./modelos/", "dm_", i, "_con.tif"), format = "GTiff", 
                       overwrite = T)
           writeRaster(dm.mod > tr, paste0("./modelos/bin/", "dm_", i, "_bin.tif"), format = "GTiff", 
@@ -317,6 +320,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       mah <- mahal(predictors, pres_train)
       e = evaluate(pres_test, backg_test, mah, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
+      TSS.calc=max(e@TPR + e@TNR) - 1
       aval[i+18, ] = threshold(e)
       aval[i+18, 7] = "Mahalanobis"
       aval[i+18, 8] = e@auc
@@ -339,7 +343,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
         dev.off()
       }
       if(missing(tss)==FALSE){
-        if(tr>tss){
+        if(TSS.calc>tss){
           writeRaster(mah.mod, paste0("./modelos/", "mah_", i, "_con.tif"), format = "GTiff", 
                       overwrite = T)
           writeRaster(mah.mod > tr, paste0("./modelos/bin/", "mah_", i, "_bin.tif"), format = "GTiff", 
@@ -405,6 +409,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       #e = evaluate(pres_test, backg_test, GLM, predictors)
       
       tr = e@t[which.max(e@TPR + e@TNR)]
+      TSS.calc=max(e@TPR + e@TNR) - 1
       aval[i+9, ] = threshold(e)
       aval[i+9, 7] = "GLM"
       aval[i+9, 8] = e@auc
@@ -427,7 +432,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
         dev.off()
       }
       if(missing(tss)==FALSE){
-        if(tr>tss){
+        if(TSS.calc>tss){
           writeRaster(GLM.mod, paste0("./modelos/", "GLM_", i, "_con.tif"), format = "GTiff", 
                       overwrite = T)
           writeRaster(GLM.mod > tr, paste0("./modelos/bin/", "GLM_", i, "_bin.tif"), format = "GTiff", 
@@ -482,6 +487,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       RF <- randomForest(pa ~ ., data = envtrain)
       e = evaluate(pres_test, backg_test, RF, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
+      TSS.calc=max(e@TPR + e@TNR) - 1
       aval[i + 12, ] = threshold(e)
       aval[i + 12, 7] = "Random Forest"
       aval[i + 12, 8] = e@auc
@@ -503,7 +509,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
         dev.off()
       }
       if(missing(tss)==FALSE){
-        if(tr>tss){
+        if(TSS.calc>tss){
           writeRaster(RF.mod, paste0("./modelos/", "RF_", i, "_con.tif"), format = "GTiff", 
                       overwrite = T)
           writeRaster(RF.mod > tr, paste0("./modelos/bin/", "RF_", i, "_bin.tif"), format = "GTiff", 
@@ -561,6 +567,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       
       e = evaluate(pres_test, backg_test, SVM, predictors)
       tr = e@t[which.max(e@TPR + e@TNR)]
+      TSS.calc=max(e@TPR + e@TNR) - 1
       aval[i + 15, ] = threshold(e)
       aval[i + 15, 7] = "SVM"
       aval[i + 15, 8] = e@auc
@@ -585,7 +592,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
       }
       
       if(missing(tss)==FALSE){
-        if(tr>tss){
+        if(TSS.calc>tss){
           writeRaster(SVM.mod, paste0("./modelos/", "SVM_", i, "_con.tif"), format = "GTiff", 
                       overwrite = T)
           writeRaster(SVM.mod > tr, paste0("./modelos/bin/", "SVM_", i, "_bin.tif"), format = "GTiff", 
