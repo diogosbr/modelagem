@@ -597,10 +597,10 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
                       overwrite = T)
           writeRaster(SVM.mod > tr, paste0("./modelos/bin/", "SVM_", i, "_bin.tif"), format = "GTiff", 
                       overwrite = T)
-          png(paste0("./png/", "bc_", i, "con.png"))
+          png(paste0("./png/", "SVM_", i, "con.png"))
           plot(SVM.mod, main = paste0("SVM con part_", i))
           dev.off()
-          png(paste0("./png/", "bc_", i, "bin.png"))
+          png(paste0("./png/", "SVM_", i, "bin.png"))
           plot(SVM.mod > tr, main = paste0("SVM bin part_", i))
           dev.off()
         }
