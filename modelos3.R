@@ -63,13 +63,14 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   aval = as.data.frame(matrix(NA, k * 7, 11))
   
   #Buffer####
-  if( missing(buffer)==F ){
+  if( exists(buffer) ){
     pts2=pts1
     names(pts2)=c("lon",'lat')
     coordinates(pts2) <- ~lon + lat
     if(buffer=="mean"){
       dist.buf <- mean(spDists(x = pts1, longlat = FALSE, segments = TRUE))
-    } else(dist.buf <- max(spDists(x = pts1, longlat = FALSE, segments = TRUE)))
+    } 
+    if(missing(buffer)){dist.buf <- max(spDists(x = pts1, longlat = FALSE, segments = TRUE))}
     
     buffer <- raster::buffer(pts2, width = dist.buf, dissolve = TRUE)
     buffer <- SpatialPolygonsDataFrame(buffer, data = as.data.frame(buffer@plotOrder), 
