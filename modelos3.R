@@ -1,7 +1,7 @@
 modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx = F, GLM = F, RF = F, 
                    SVM = F, dm = F, mah = F, proj, buffer, geo.filt = T, br, mod = 'before', tss) {
   
-  if(missing(abio)){stop("Informe as variÃ¡veis abióticas")}else(predictors=abio)
+  if(missing(abio)){stop("Informe as variÃƒÂ¡veis abiÃ³ticas")}else(predictors=abio)
   original = getwd()
   # escolha da pasta
   dir.create(paste0("./", diretorio))
@@ -20,37 +20,37 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     download.file(url, dest = "maxent.zip", mode = "wb")
     unzip("maxent.zip", files = "maxent.jar", exdir = system.file("java", package = "dismo"))
     unlink("maxent.zip")
-    warning("Maxent foi colocado no diretório")
+    warning("Maxent foi colocado no diretÃ³rio")
   } 
   
-  # Abrindo bibliotecas necessárias####
+  # Abrindo bibliotecas necessÃ¡rias####
   library(dismo)
   library(rgdal)
   
   ##--------------------------##
-  # Pontos de ocorrência####
+  # Pontos de ocorrÃªncia####
   ##------------------------##
   
-  # Extrair os valores ambientais das localidades onde há registros de ocorrência
+  # Extrair os valores ambientais das localidades onde hÃ¡ registros de ocorrÃªncia
   if (exists("coord")) {
     pts = coord
     if (dim(pts)[2] == 2) {
       pts = pts
-    } else (stop("Verique o número de colunas de planilha com as coordenadas"))
-  } else (stop("Não existe objeto com os pontos de ocorrência.", "Verifique o nome do objeto"))
+    } else (stop("Verique o nÃºmero de colunas de planilha com as coordenadas"))
+  } else (stop("NÃ£o existe objeto com os pontos de ocorrÃªncia.", "Verifique o nome do objeto"))
   
   source("https://raw.githubusercontent.com/diogosbr/modelagem/master/clean.R")
   pts1 = clean(pts, predictors = predictors)
   names(pts1) = c("long", "lat")
   aa=data.frame(Originais=dim(pts)[1], Unicos=dim(pts1)[1], Retirados=dim(pts)[1]-dim(pts1)[1])
   
-  #Filtros geográficos####
+  #Filtros geogrÃ¡ficos####
   if(geo.filt==T){
     res=0.1666667#10min - 20km
     r=raster(extent(range(pts1[,1]), range(pts1[,2])) + res)
     res(r)=res
     pts1=gridSample(pts1,r, n=1)
-    cat(paste0(dim(pts1)[1], ' após o filtro geográfico de 20Km'))
+    cat(paste0(dim(pts1)[1], ' apÃ³s o filtro geogrÃ¡fico de 20Km'))
     aa$geo.filt=dim(pts1)[1]
   }
   write.table(aa, "Nocc.csv", row.names = F, sep = ";")
@@ -59,11 +59,11 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   # Modelando #####
   #--------------#
   
-  #criando tabela de saída para armazenar valores de desempenho dos modelos
+  #criando tabela de saÃ­da para armazenar valores de desempenho dos modelos
   aval = as.data.frame(matrix(NA, k * 7, 11))
   
   #Buffer####
-  if( exists(buffer) ){
+  if( exists(buffer)==T ){
     pts2=pts1
     names(pts2)=c("lon",'lat')
     coordinates(pts2) <- ~lon + lat
@@ -81,7 +81,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     backg = as.data.frame(backg)
     rm(buffer)
     rm(pts2)
-  } else(backg <- randomPoints(predictors, n = 1000, extf = 1.25))
+  } else(backg <- randomPoints(predictors, n = 1000, extf = 1))
   
   colnames(backg) = c("long", "lat")
   backvalues = extract(predictors, backg)
@@ -100,7 +100,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     # Bioclim #####
     
     for (i in 1:k) {
-      cat(c("\n", "Começou a partição", i, "Bioclim"))
+      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "Bioclim"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -171,7 +171,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     # Maxent #####
     
     for (i in 1:k) {
-      cat(c("\n", "Começou a partição", i, "Maxent"))
+      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "Maxent"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -241,7 +241,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   if (dm == T) {
     # Domain #####
     for (i in 1:k) {
-      cat(c("\n", "Começou a partição", i, "Domain"))
+      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "Domain"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -312,7 +312,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     # Mahalanobis #####
     
     for (i in 1:k) {
-      cat(c("\n", "Começou a partição", i, "Mahalanobis"))
+      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "Mahalanobis"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -382,7 +382,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   if (GLM == T) {
     # GLM ####
     for (i in 1:k) {
-      cat(c("\n", "Começou a partição", i, "GLM"))
+      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "GLM"))
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
       backg_train <- backg[group.a != i, ]
@@ -472,7 +472,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     # Random Forest ####
     library(randomForest)
     for (i in 1:k) {
-      cat(c("\n", "Começou a partição", i, "RandomForest"))
+      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "RandomForest"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
@@ -550,7 +550,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     # SVM ####
     library(kernlab)
     for (i in 1:k) {
-      cat(c("\n", "Começou a partição", i, "SVM"))
+      cat(c("\n", "ComeÃ§ou a partiÃ§Ã£o", i, "SVM"))
       
       pres_train <- pts1[group.p != i, ]
       pres_test <- pts1[group.p == i, ]
@@ -633,8 +633,8 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   # Ensemble final ####
   
   names(aval)[1:6] = names(threshold(e))
-  names(aval)[7:11] = c("Algoritmo", "AUC", "TSS", "TSSth", "Partição")
-  write.table(na.omit(aval), "Avaliação.csv", sep = ";", dec = ".",row.names = F)
+  names(aval)[7:11] = c("Algoritmo", "AUC", "TSS", "TSSth", "PartiÃ§Ã£o")
+  write.table(na.omit(aval), "AvaliaÃ§Ã£o.csv", sep = ";", dec = ".",row.names = F)
   
   if(length(list.files("./ensembles", pattern = ".tif", full.names = T))!=0){
     final = stack(list.files("./ensembles", pattern = ".tif", full.names = T))
@@ -652,7 +652,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
     points(pts1)
     dev.off()
     
-    ### Modelagem até aqui ###
+    ### Modelagem atÃ© aqui ###
     
     if (plot == T) {
       plot(mm)
