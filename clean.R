@@ -5,7 +5,7 @@ clean = function(coord, predictors) {
             pts = coord
             mask = predictors[[1]]
             # Selecionar pontos espacialmente únicos #
-            cell <- cellFromXY(mask, pts)  # get the cell number for each point
+            cell <- raster::cellFromXY(mask, pts)  # get the cell number for each point
             dup <- duplicated(cell)
             pts1 <- pts[!dup, ]  # select the records that are not duplicated
             pts1 <- pts1[!is.na(extract(mask, pts1)), ]  #selecionando apenas pontos que tem valor de raster
