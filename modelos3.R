@@ -1,5 +1,5 @@
 modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx = F, GLM = F, RF = F, 
-                   SVM = F, dm = F, mah = F, proj, buffer, geo.filt = T, br, mod = 'before', tss) {
+                   SVM = F, dm = F, mah = F, proj, geo.filt = T, br, mod = 'before', tss) {
   
   if(missing(abio)){stop("Informe as variÃ¡veis abióticas")}else(predictors=abio)
   original = getwd()
@@ -62,27 +62,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   #criando tabela de saída para armazenar valores de desempenho dos modelos
   aval = as.data.frame(matrix(NA, k * 7, 11))
   
-  #Buffer####
-  if( exists(buffer) ){
-    pts2=pts1
-    names(pts2)=c("lon",'lat')
-    coordinates(pts2) <- ~lon + lat
-    if(buffer=="mean"){
-      dist.buf <- mean(spDists(x = pts1, longlat = FALSE, segments = TRUE))
-    } 
-    if(missing(buffer)){dist.buf <- max(spDists(x = pts1, longlat = FALSE, segments = TRUE))}
-    
-    buffer <- raster::buffer(pts2, width = dist.buf, dissolve = TRUE)
-    buffer <- SpatialPolygonsDataFrame(buffer, data = as.data.frame(buffer@plotOrder), 
-                                       match.ID = FALSE)
-    crs(buffer) <- crs(predictors)
-    crs(br) = crs(predictors)
-    buffer=rgeos::gIntersection(br, buffer, byid = T)
-    backg = spsample(buffer, 1000, type="random")
-    backg = as.data.frame(backg)
-    rm(buffer)
-    rm(pts2)
-  } else(backg <- randomPoints(predictors, n = 1000, extf = 1))
+backg <- randomPoints(predictors, n = 1000, extf = 1)
   
   colnames(backg) = c("long", "lat")
   backvalues = extract(predictors, backg)
