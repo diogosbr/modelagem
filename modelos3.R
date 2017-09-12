@@ -63,7 +63,7 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   aval = as.data.frame(matrix(NA, k * 7, 11))
   
   #Buffer####
-  if( exists(buffer)==T ){
+  if( missing(buffer)==F ){
     pts2=pts1
     names(pts2)=c("lon",'lat')
     coordinates(pts2) <- ~lon + lat
