@@ -614,8 +614,8 @@ backg <- randomPoints(predictors, n = 1000, extf = 1)
   # Ensemble final ####
   
   names(aval)[1:6] = names(threshold(e))
-  names(aval)[7:11] = c("Algoritmo", "AUC", "TSS", "TSSth", "Partição")
-  write.table(na.omit(aval), "Avaliação.csv", sep = ";", dec = ".",row.names = F)
+  names(aval)[7:11] = c("Algoritmo", "AUC", "TSS", "TSSth", "Particao")
+  write.table(na.omit(aval), "Avaliacao.csv", sep = ";", dec = ".",row.names = F)
   
   if(length(list.files("./ensembles", pattern = ".tif", full.names = T))!=0){
     final = stack(list.files("./ensembles", pattern = ".tif", full.names = T))
