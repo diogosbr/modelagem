@@ -1,5 +1,46 @@
+#' @title Corta raster com base em um shape
+#' @name cut.raster
+#'
+#' @description Uma funcao para cortar um raster com base em um shapefile informado.
+#'
+#' @param coord data.frame. Tabela com os dados de ocoência da espécie. Deve conter apenas duas colunas: long e lat, nesta ordem.
+#' @param abio os rasters a serem cortados. Aceita um objeto do tipo _stack_
+#' @param k número de partições. Padrão é 3.
+#' @param diretorio nome do diretório a ser criado com os resultados na modelagem.
+#' @param plot lógico. Plota o modelo final.
+#' @param bc bioclim
+#' @param mx Maxent
+#' @param GLM Generalized linear model
+#' @param RF Random Forest (regression)
+#' @param SVM Support Vector Machine
+#' @param dm Domain
+#' @param mah distância de Mahalanobis
+#' @param proj stack com as variáveis onde será projetado o modelo. Caso não seja informado, o modelo é projetado no mesmo local de criação do modelo (informado em abio).
+#' @param buffer distância escolhida para gerar um buffer em torno dos pontos de ocorrência onde será gerados os pontos de pseudo-ausência. "mean" é a distância média entre os pontos e "max" é a distância máxima entre os pontos.
+#' @param geo.filt lógico. Se TRUE (padrão), mantém apenas os pontos que estejam no mínimo 20km distantes um do outro. 
+#' @param mod quando o modelo é cortado para gerar o ensemble. "before" cada partição é cortada pelo seu próprio TSSth. "after" o ensemble de cada algoritmo é cortado pelo TSSthmédio das partições.
+#' @param tss numérico. Seleciona apenas modelos que apresente valor TSS maior do que o informado.
+#'
+#' @details A função mais complexa deste pacote
+#'
+#' @return Arquivos raster em um diretório indicado pelo usuário.
+#'
+#' @author Diogo S. B. Rocha
+#'
+#' @seealso \code{\link[dismo]{bioclim}}, \code{\link[raster]{mask}}
+#'
+#' @examples
+#' fnames <- list.files(path=paste(system.file(package="dismo"), '/ex', sep=''), pattern='grd', full.names=TRUE )
+#' predictors <- stack(fnames)
+#' occurence <- paste(system.file(package="dismo"), '/ex/bradypus.csv', sep='')
+#' occ <- read.table(occurence, header=TRUE, sep=',')[,-1]
+#' modelos(coord = occ, abio = predictors)
+#' 
+#' @import raster
+#'
+#' @export
 modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx = F, GLM = F, RF = F, 
-                   SVM = F, dm = F, mah = F, proj, buffer, geo.filt = T, mod = 'before', tss) {
+                   SVM = F, dm = F, mah = F, proj, buffer = 'none', geo.filt = T, mod = 'before', tss = 0) {
   
   if(missing(abio)){stop("Informe as variÃ¡veis abióticas")}else(predictors=abio)
   original = getwd()
@@ -68,13 +109,12 @@ modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx
   aval = as.data.frame(matrix(NA, k * 7, 11))
   
   #Buffer####
-  if( exists(buffer) ){
+  if( buffer != 'none' ){
     pts2=pts1
     names(pts2)=c("lon",'lat')
     coordinates(pts2) <- ~lon + lat
-    if(buffer=="mean"){
-      dist.buf <- mean(spDists(x = pts1, longlat = FALSE, segments = TRUE))
-    } else(dist.buf <- max(spDists(x = pts1, longlat = FALSE, segments = TRUE)))
+    if(buffer=="mean"){dist.buf <- mean(spDists(x = pts1, longlat = FALSE, segments = TRUE))} 
+    if(buffer=="max"){dist.buf <- max(spDists(x = pts1, longlat = FALSE, segments = TRUE))}
     
     buffer <- raster::buffer(pts2, width = dist.buf, dissolve = TRUE)
     buffer <- SpatialPolygonsDataFrame(buffer, data = as.data.frame(buffer@plotOrder), 
