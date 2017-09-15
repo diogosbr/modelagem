@@ -8,7 +8,7 @@
 #' @param zeros lógico. Se FALSE, os zeros do modelo são convertivos em NA. 
 #' @param open lógico. Se TURE, abre o arquivo KML no Google Earth.
 #' 
-#' @details 
+#' @details aaa
 #'
 #' @return data.frame contendo longitude e latitude.
 #'

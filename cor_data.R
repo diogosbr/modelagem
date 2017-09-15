@@ -14,7 +14,7 @@
 #'
 #' @author Diogo S. B. Rocha
 #'
-#' @seealso 
+#' @seealso aaa
 #'
 #' @examples
 #' fnames <- list.files(path=paste(system.file(package="dismo"), '/ex', sep=''), pattern='grd', full.names=TRUE )

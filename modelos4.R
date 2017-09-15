@@ -37,12 +37,17 @@
 #' modelos(coord = occ, abio = predictors)
 #' 
 #' @import raster
+#' @import dismo
+#' @import kernlab
+#' @import maptools
+#' @import rgdal
+#' @import randomForest
 #'
 #' @export
 modelos = function(coord, abio, k = 3, diretorio = "teste", plot = T, bc = T, mx = F, GLM = F, RF = F, 
                    SVM = F, dm = F, mah = F, proj, buffer = 'none', geo.filt = T, mod = 'before', tss = 0) {
   
-  if(missing(abio)){stop("Informe as variÃ¡veis abióticas")}else(predictors=abio)
+  if(missing(abio)){stop("Informe as variáveis abióticas")}else(predictors=abio)
   original = getwd()
   # escolha da pasta
   dir.create(paste0("./", diretorio))

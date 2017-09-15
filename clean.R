@@ -6,7 +6,7 @@
 #' @param coord data.frame com as coordenadas 
 #' @param abio os rasters a serem cortados. Aceita um objeto do tipo _stack_
 #'
-#' @details 
+#' @details aaa
 #'
 #' @return data.frame contendo longitude e latitude.
 #'
@@ -15,6 +15,7 @@
 #' @seealso \code{\link[raster]{cellFromXY}}, \code{\link[raster]{mask}}, \code{\link[raster]{extract}}
 #'
 #' @examples
+#' require(dismo)
 #' fnames <- list.files(path=paste(system.file(package="dismo"), '/ex', sep=''), pattern='grd', full.names=TRUE )
 #' predictors <- stack(fnames)
 #' cut.raster(abio = predictors, br=T, extension = ".tif")
